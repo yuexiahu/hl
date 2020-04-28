@@ -26,4 +26,5 @@ void hl_string_prepend(hl_string* string, const hl_string* data);
 void hl_string_prepend_cstr(hl_string* string, const char* data);
 size_t hl_string_cap(const hl_string* string);
 void hl_string_reserve(hl_string* string, size_t len);
+void hl_string_shrink_to_fit(hl_string* string);
 void hl_string_swap(hl_string* string1, hl_string* string2);

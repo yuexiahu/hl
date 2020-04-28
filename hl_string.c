@@ -1,7 +1,7 @@
 #include "hl_string.h"
 #include "hl_config.h"
 
-static size_t hl_better_size(size_t size)
+static inline size_t hl_better_size(size_t size)
 {
     size_t res = (HL_STRING_SSO_LEN + 1) << 1;
     while(res < size)
@@ -153,10 +153,36 @@ void hl_string_reserve(hl_string* string, size_t len)
     string->cap = cap;
 }
 
-static inline
-void hl_string_move(hl_string* dest, hl_string* src)
+void hl_string_shrink_to_fit(hl_string* string)
 {
-    hl_assert(dest != NULL && dest != NULL);
+    hl_assert(string != NULL);
+    if(string->start == string->sso)
+    {
+        return;
+    }
+
+    size_t len = hl_string_len(string);
+    if(len <= HL_STRING_SSO_LEN)
+    {
+        memcpy(string->sso, string->start, len + 1);
+        string->start = string->sso;
+    }
+    else
+    {
+        size_t cap = hl_better_size(len + 1);
+        if(cap != string->cap)
+        {
+            char* new = hl_malloc(cap);
+            memcpy(new, string->start, len + 1);
+            hl_free(string->start);
+            string->start = new;
+            string->cap = cap;
+        }
+    }
+}
+
+static inline void hl_string_move(hl_string* dest, hl_string* src)
+{
     if(src->start != src->sso)
     {
         dest->start = src->start;
@@ -167,7 +193,7 @@ void hl_string_move(hl_string* dest, hl_string* src)
     {
         dest->start = dest->sso;
         dest->len = src->len;
-        strcpy(dest->sso, src->sso);
+        memcpy(dest->sso, src->sso, src->len + 1);
     }
 }
 

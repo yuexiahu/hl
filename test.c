@@ -160,7 +160,35 @@ CASE(test_string_swap)
     hl_string_free(&str2);
 }
 
-UNIT(test_string, test_string_set, test_string_append, test_string_prepend, test_string_swap)
+CASE(test_string_reserve_and_fit)
+{
+    hl_string str;
+    hl_string_new(&str);
+    EXPECT_EQ_INT(HL_STRING_SSO_LEN, hl_string_cap(&str));
+
+    hl_string_reserve(&str, 1000);
+    EXPECT_EQ_INT(1024 - 1, hl_string_cap(&str));
+
+    hl_string_set_cstr(&str, "123");
+    hl_string_shrink_to_fit(&str);
+    EXPECT_EQ_INT(HL_STRING_SSO_LEN, hl_string_cap(&str));
+    EXPECT_EQ_STR("123", hl_string_cstr(&str));
+
+    hl_string_set_cstr(&str, "12345678901234567890");
+    EXPECT_EQ_INT(32 - 1, hl_string_cap(&str));
+    hl_string_reserve(&str, 1000);
+    EXPECT_EQ_INT(1024 - 1, hl_string_cap(&str));
+    EXPECT_EQ_STR("12345678901234567890", hl_string_cstr(&str));
+
+    hl_string_shrink_to_fit(&str);
+    EXPECT_EQ_INT(32 - 1, hl_string_cap(&str));
+    EXPECT_EQ_STR("12345678901234567890", hl_string_cstr(&str));
+
+    hl_string_free(&str);
+}
+
+UNIT(test_string, test_string_set, test_string_append, test_string_prepend, test_string_swap,
+     test_string_reserve_and_fit)
 
 SIMPLETEST_CONF(SIMPLETEST_ENABLE_UNIT_OUTPUT | SIMPLETEST_ENABLE_CASE_OUTPUT);
 SIMPLETEST_LIST(main, test_string);
