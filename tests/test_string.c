@@ -1,5 +1,5 @@
-#include "hl_string.h"
 #include "simpletest.h"
+#include "hl_string.h"
 
 CASE(test_string_set)
 {
@@ -189,6 +189,3 @@ CASE(test_string_reserve_and_fit)
 
 UNIT(test_string, test_string_set, test_string_append, test_string_prepend, test_string_swap,
      test_string_reserve_and_fit)
-
-SIMPLETEST_CONF(SIMPLETEST_ENABLE_UNIT_OUTPUT | SIMPLETEST_ENABLE_CASE_OUTPUT);
-SIMPLETEST_LIST(main, test_string);

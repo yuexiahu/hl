@@ -1,5 +1,5 @@
 #include "hl_string.h"
-#include "hl_config.h"
+#include "hl_defs.h"
 
 static inline size_t hl_better_size(size_t size)
 {
@@ -62,6 +62,16 @@ void hl_string_set_cstr(hl_string* string, const char* data)
     string->len = len;
 }
 
+size_t hl_string_cap(const hl_string* string)
+{
+    hl_assert(string != NULL);
+    if(string->start == string->sso)
+    {
+        return HL_STRING_SSO_LEN;
+    }
+    return string->cap - 1;
+}
+
 void hl_string_append(hl_string* string, const hl_string* data)
 {
     hl_assert(string != NULL);
@@ -122,16 +132,6 @@ void hl_string_prepend_cstr(hl_string* string, const char* data)
     }
 }
 
-size_t hl_string_cap(const hl_string* string)
-{
-    hl_assert(string != NULL);
-    if(string->start == string->sso)
-    {
-        return HL_STRING_SSO_LEN;
-    }
-    return string->cap - 1;
-}
-
 void hl_string_reserve(hl_string* string, size_t len)
 {
     hl_assert(string != NULL);
@@ -165,6 +165,7 @@ void hl_string_shrink_to_fit(hl_string* string)
     if(len <= HL_STRING_SSO_LEN)
     {
         memcpy(string->sso, string->start, len + 1);
+        hl_free(string->start);
         string->start = string->sso;
     }
     else
