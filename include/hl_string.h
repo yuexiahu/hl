@@ -21,9 +21,10 @@ void hl_string_free(hl_string* string);
 void hl_string_clear(hl_string* string);
 void hl_string_set(hl_string* string, const hl_string* data);
 void hl_string_set_cstr(hl_string* string, const char* data);
-size_t hl_string_cap(const hl_string* string);
+
 #define hl_string_len(string) ((string)->len)
 #define hl_string_cstr(string) ((string)->start)
+size_t hl_string_cap(const hl_string* string);
 
 void hl_string_append(hl_string* string, const hl_string* data);
 void hl_string_append_cstr(hl_string* string, const char* data);

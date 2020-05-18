@@ -17,14 +17,15 @@ void hl_vector_free(hl_vector* vector);
 void hl_vector_clear(hl_vector* vector);
 void hl_vector_set(hl_vector* vector, const hl_vector* data);
 void hl_vector_set_array(hl_vector* vector, const void* data, size_t len);
+
 #define hl_vector_len(vector) ((vector)->len)
 #define hl_vector_cap(vector) ((vector)->cap)
 #define hl_vector_array(vector) ((vector)->items)
 #define hl_vector_item_size(vector) ((vector)->item_size)
-#define hl_vector_get(type, vector, index) (*(type*)hl_vector_at((vector), index))
-
-void* hl_vector_at(hl_vector* vector, size_t index);
-int hl_vector_index_of(hl_vector* vector, const void* item);
+#define hl_vector_ref(type, vector, index) (*(type*)hl_vector_at((vector), index))
+void* hl_vector_at(const hl_vector* vector, size_t index);
+void hl_vector_get(const hl_vector* vector, size_t index, void* data);
+int hl_vector_index_of(const hl_vector* vector, const void* item);
 
 void hl_vector_remove_at(hl_vector* vector, size_t index);
 void hl_vector_remove(hl_vector* vector, const void* item);

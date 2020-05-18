@@ -1,4 +1,3 @@
-#include "hl_string.h"
 #include "simpletest.h"
 
 void test_string();

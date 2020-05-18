@@ -27,7 +27,7 @@ void hl_vector_new(hl_vector* vector, size_t cap, size_t item_size)
     }
     else
     {
-        vector->cap = hl_better_size(cap);
+        vector->cap = cap;
         vector->items = hl_malloc(vector->cap * item_size);
     }
 }
@@ -78,14 +78,20 @@ void hl_vector_set_array(hl_vector* vector, const void* data, size_t len)
     vector->len = len;
 }
 
-void* hl_vector_at(hl_vector* vector, size_t index)
+void* hl_vector_at(const hl_vector* vector, size_t index)
 {
     hl_assert(vector != NULL);
     hl_return_v_check(index < hl_vector_len(vector), NULL);
     return (char*)vector->items + index * hl_vector_item_size(vector);
 }
 
-int hl_vector_index_of(hl_vector* vector, const void* item)
+void hl_vector_get(const hl_vector* vector, size_t index, void* data)
+{
+    hl_return_check(data != NULL);
+    memcpy(data, hl_vector_at(vector, index), hl_vector_item_size(vector));
+}
+
+int hl_vector_index_of(const hl_vector* vector, const void* item)
 {
     hl_assert(vector != NULL);
     char* p = vector->items;
@@ -182,11 +188,15 @@ void hl_vector_shrink_to_fit(hl_vector* vector)
 {
     hl_assert(vector != NULL);
 
-    size_t cap = hl_better_size(hl_vector_len(vector));
+    size_t cap = hl_vector_len(vector);
     if(cap != vector->cap)
     {
-        void* new = hl_malloc(cap * hl_vector_item_size(vector));
-        memcpy(new, vector->items, hl_vector_len(vector));
+        void* new = NULL;
+        if(cap > 0)
+        {
+            new = hl_malloc(cap * hl_vector_item_size(vector));
+            memcpy(new, vector->items, hl_vector_len(vector));
+        }
         hl_free(vector->items);
         vector->items = new;
         vector->cap = cap;
