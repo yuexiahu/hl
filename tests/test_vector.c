@@ -132,11 +132,34 @@ CASE(test_vector_swap)
     }
 
     hl_vector_free(&vec1);
-    hl_vector_free(&vec1);
+    hl_vector_free(&vec2);
 }
 
 CASE(test_vector_reserve_and_fit)
 {
+    hl_vector vector;
+
+    hl_vector_new(&vector, 0, sizeof(int));
+    EXPECT_EQ_INT(0, hl_vector_cap(&vector));
+    hl_vector_reserve(&vector, 10);
+    EXPECT_EQ_INT(16, hl_vector_cap(&vector));
+    hl_vector_shrink_to_fit(&vector);
+    EXPECT_EQ_INT(0, hl_vector_cap(&vector));
+    hl_vector_reserve(&vector, 100);
+    for (int i = 0; i < 10; ++i) {
+        hl_vector_append(&vector, &i);
+    }
+    hl_vector_shrink_to_fit(&vector);
+    EXPECT_EQ_INT(16, hl_vector_cap(&vector));
+    hl_vector_free(&vector);
+
+    hl_vector_new(&vector, 1, sizeof(int));
+    EXPECT_EQ_INT(8, hl_vector_cap(&vector));
+    hl_vector_free(&vector);
+
+    hl_vector_new(&vector, 10, sizeof(int));
+    EXPECT_EQ_INT(16, hl_vector_cap(&vector));
+    hl_vector_free(&vector);
 }
 
 UNIT(test_vector, test_vector_get_and_append, test_vector_prepend, test_vector_swap, test_vector_reserve_and_fit)

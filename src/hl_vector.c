@@ -3,6 +3,11 @@
 
 static inline size_t hl_better_size(size_t size)
 {
+    if(size == 0)
+    {
+        return 0;
+    }
+
     size_t res = 8;
     while(res < size)
         res <<= 1;
@@ -184,6 +189,7 @@ void hl_vector_shrink_to_fit(hl_vector* vector)
         memcpy(new, vector->items, hl_vector_len(vector));
         hl_free(vector->items);
         vector->items = new;
+        vector->cap = cap;
     }
 }
 
