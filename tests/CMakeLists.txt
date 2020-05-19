@@ -14,3 +14,5 @@ set(HEADER_FILES
 
 add_executable(tests ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(tests hl::hl)
+
+add_test(NAME tests COMMAND tests)

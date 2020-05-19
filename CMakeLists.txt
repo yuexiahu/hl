@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 
 project(hl)
+include(CTest)
 
 option(HL_BUILD_STATIC_LIBS "Build static library" ON)
 option(HL_BUILD_SHARED_LIBS "Build shared library" OFF)
-option(HL_BUILD_TESTS       "Build test cases" OFF)
 
 set(SOURCE_FILES
     src/hl_string.c
@@ -50,6 +50,6 @@ if(${HL_BUILD_STATIC_LIBS} STREQUAL "ON")
 endif()
 
 
-if(${HL_BUILD_TESTS} STREQUAL "ON")
+if(${BUILD_TESTING} STREQUAL "ON")
     add_subdirectory(tests)
 endif()
