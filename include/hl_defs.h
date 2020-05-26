@@ -1,10 +1,20 @@
+#ifndef HL_DEFS_
+#define HL_DEFS_
+
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define hl_free free
 #define hl_malloc malloc
 #define hl_realloc realloc
+
+#ifndef BOOL
+#define BOOL int
+#endif
+
+#define __HL_INLINE__ static inline
 
 #define hl_assert assert
 #define hl_log(fmt, ...)                                                                                               \
@@ -45,3 +55,5 @@
         hl_err(#exp " check failed!");                                                                                 \
         return (value);                                                                                                \
     }
+
+#endif // HL_DEFS_

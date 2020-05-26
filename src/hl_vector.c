@@ -1,13 +1,7 @@
 #include "hl_vector.h"
-#include "hl_defs.h"
 
-static inline size_t hl_better_size(size_t size)
+__HL_INLINE__ size_t hl_better_size(size_t size)
 {
-    if(size == 0)
-    {
-        return 0;
-    }
-
     size_t res = 8;
     while(res < size)
         res <<= 1;
@@ -76,19 +70,6 @@ void hl_vector_set_array(hl_vector* vector, const void* data, size_t len)
     hl_vector_reserve(vector, len);
     memcpy(vector->items, data, len * hl_vector_item_size(vector));
     vector->len = len;
-}
-
-void* hl_vector_at(const hl_vector* vector, size_t index)
-{
-    hl_assert(vector != NULL);
-    hl_return_v_check(index < hl_vector_len(vector), NULL);
-    return (char*)vector->items + index * hl_vector_item_size(vector);
-}
-
-void hl_vector_get(const hl_vector* vector, size_t index, void* data)
-{
-    hl_return_check(data != NULL);
-    memcpy(data, hl_vector_at(vector, index), hl_vector_item_size(vector));
 }
 
 int hl_vector_index_of(const hl_vector* vector, const void* item)

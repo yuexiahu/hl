@@ -164,14 +164,14 @@ CASE(test_string_reserve_and_fit)
 {
     hl_string str;
     hl_string_new(&str);
-    EXPECT_EQ_INT(HL_STRING_SSO_LEN, hl_string_cap(&str));
+    EXPECT_EQ_INT(__HL_STRING_SSO_LEN, hl_string_cap(&str));
 
     hl_string_reserve(&str, 1000);
     EXPECT_EQ_INT(1024 - 1, hl_string_cap(&str));
 
     hl_string_set_cstr(&str, "123");
     hl_string_shrink_to_fit(&str);
-    EXPECT_EQ_INT(HL_STRING_SSO_LEN, hl_string_cap(&str));
+    EXPECT_EQ_INT(__HL_STRING_SSO_LEN, hl_string_cap(&str));
     EXPECT_EQ_STR("123", hl_string_cstr(&str));
 
     hl_string_set_cstr(&str, "12345678901234567890");

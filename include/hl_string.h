@@ -1,16 +1,16 @@
 #ifndef HL_STRING_H_
 #define HL_STRING_H_
 
-#include <stdlib.h>
+#include "hl_defs.h"
 
-#define HL_STRING_SSO_LEN 15
+#define __HL_STRING_SSO_LEN 15
 
 typedef struct hl_string
 {
     char* start;
     size_t len;
     union {
-        char sso[HL_STRING_SSO_LEN + 1];
+        char sso[__HL_STRING_SSO_LEN + 1];
         size_t cap;
     };
 } hl_string;
@@ -22,8 +22,18 @@ void hl_string_clear(hl_string* string);
 void hl_string_set(hl_string* string, const hl_string* data);
 void hl_string_set_cstr(hl_string* string, const char* data);
 
-#define hl_string_len(string) ((string)->len)
-#define hl_string_cstr(string) ((string)->start)
+__HL_INLINE__ size_t hl_string_len(const hl_string* string)
+{
+    hl_assert(string != NULL);
+    return string->len;
+}
+
+__HL_INLINE__ char* hl_string_cstr(const hl_string* string)
+{
+    hl_assert(string != NULL);
+    return string->start;
+}
+
 size_t hl_string_cap(const hl_string* string);
 
 void hl_string_append(hl_string* string, const hl_string* data);

@@ -9,12 +9,14 @@ option(HL_BUILD_SHARED_LIBS "Build shared library" OFF)
 set(SOURCE_FILES
     src/hl_string.c
     src/hl_vector.c
+    src/hl_list.c
     )
 
 set(HEADER_FILES
     include/hl_defs.h
     include/hl_string.h
     include/hl_vector.h
+    include/hl_list.h
     )
 
 if(${HL_BUILD_SHARED_LIBS} STREQUAL "ON")

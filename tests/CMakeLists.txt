@@ -6,6 +6,7 @@ set(SOURCE_FILES
     test.c
     test_string.c
     test_vector.c
+    test_list.c
     )
 
 set(HEADER_FILES
