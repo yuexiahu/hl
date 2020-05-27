@@ -15,7 +15,7 @@ void hl_list_new(hl_list* list, size_t item_size)
 void hl_list_free(hl_list* list)
 {
     hl_list_clear(list);
-    free(list->node);
+    hl_free(list->node);
     list->node = NULL;
 }
 

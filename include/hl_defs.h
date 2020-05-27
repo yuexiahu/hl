@@ -14,6 +14,10 @@
 #define BOOL int
 #endif
 
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 #define __HL_INLINE__ static inline
 
 #define hl_assert assert
