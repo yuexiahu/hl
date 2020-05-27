@@ -14,4 +14,6 @@ jobs:
     - name: build
       run: cmake --build build
     - name: test
-      run: cd build && ctest -V
+      run: cd build && ctest
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1

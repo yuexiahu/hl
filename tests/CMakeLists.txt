@@ -2,18 +2,16 @@ cmake_minimum_required(VERSION 3.1)
 
 project(tests)
 
-set(SOURCE_FILES
-    test.c
-    test_string.c
-    test_vector.c
-    test_list.c
-    )
+function(test_unit unit)
+    set(test_unit ${unit})
+    configure_file(test.c.in "${unit}_main.c")
+    add_executable(${unit} "${unit}_main.c" ${ARGV})
+    target_include_directories(${unit} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(${unit} hl::hl)
+    add_test(NAME ${unit} COMMAND ${unit})
+endfunction()
 
-set(HEADER_FILES
-    simpletest.h
-    )
+test_unit(test_string test_string.c)
+test_unit(test_vector test_vector.c)
+test_unit(test_list test_list.c)
 
-add_executable(tests ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(tests hl::hl)
-
-add_test(NAME tests COMMAND tests)
