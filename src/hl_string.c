@@ -61,16 +61,6 @@ void hl_string_set_cstr(hl_string* string, const char* data)
     string->len = len;
 }
 
-size_t hl_string_cap(const hl_string* string)
-{
-    hl_assert(string != NULL);
-    if(string->start == string->sso)
-    {
-        return __HL_STRING_SSO_LEN;
-    }
-    return string->cap - 1;
-}
-
 void hl_string_append(hl_string* string, const hl_string* data)
 {
     hl_assert(string != NULL);

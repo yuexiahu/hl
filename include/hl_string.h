@@ -34,7 +34,11 @@ __HL_INLINE__ char* hl_string_cstr(const hl_string* string)
     return string->start;
 }
 
-size_t hl_string_cap(const hl_string* string);
+__HL_INLINE__ size_t hl_string_cap(const hl_string* string)
+{
+    hl_assert(string != NULL);
+    return string->start == string->sso ? __HL_STRING_SSO_LEN : string->cap - 1;
+}
 
 void hl_string_append(hl_string* string, const hl_string* data);
 void hl_string_append_cstr(hl_string* string, const char* data);
