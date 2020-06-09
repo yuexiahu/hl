@@ -144,7 +144,7 @@
 #define UNIT(unit, ...)                                                                            \
     void unit()                                                                                    \
     {                                                                                              \
-        int index = 0;                                                                             \
+        unsigned index = 0;                                                                        \
         int pass = 0, count = 0;                                                                   \
         double pass_ = 100;                                                                        \
         unsigned start_tick_, end_tick_;                                                           \
@@ -195,7 +195,7 @@
 #define SIMPLETEST_LIST(entry, ...)                                                                \
     int entry()                                                                                    \
     {                                                                                              \
-        int index = 0;                                                                             \
+        unsigned index = 0;                                                                        \
         void (*units[])() = {__VA_ARGS__};                                                         \
         for(index = 0; index < sizeof(units) / sizeof(void*); ++index)                             \
         {                                                                                          \

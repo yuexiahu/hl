@@ -114,7 +114,7 @@ CASE(test_vector_array)
     hl_vector_new(&vector, 10, sizeof(int));
 
     int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    hl_vector_set_array(&vector, data, sizeof(data) / sizeof(int));
+    hl_vector_clone_array(&vector, data, sizeof(data) / sizeof(int));
     EXPECT_EQ_INT(10, hl_vector_len(&vector));
     EXPECT_EQ_MEM(data, hl_vector_array(&vector), sizeof(data));
     hl_vector_free(&vector);
@@ -126,7 +126,7 @@ CASE(test_verctor_insert)
     hl_vector_new(&vector, 20, sizeof(int));
 
     int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    hl_vector_set_array(&vector, data, sizeof(data) / sizeof(int));
+    hl_vector_clone_array(&vector, data, sizeof(data) / sizeof(int));
 
     for(int i = 0; i < 10; ++i)
     {

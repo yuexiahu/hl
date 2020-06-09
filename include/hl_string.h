@@ -19,22 +19,22 @@ void hl_string_new(hl_string* string);
 void hl_string_free(hl_string* string);
 
 void hl_string_clear(hl_string* string);
-void hl_string_set(hl_string* string, const hl_string* data);
-void hl_string_set_cstr(hl_string* string, const char* data);
+void hl_string_clone(hl_string* string, const hl_string* from);
+void hl_string_clone_cstr(hl_string* string, const char* from);
 
-__HL_INLINE__ size_t hl_string_len(const hl_string* string)
+HL_INLINE size_t hl_string_len(const hl_string* string)
 {
     hl_assert(string != NULL);
     return string->len;
 }
 
-__HL_INLINE__ char* hl_string_cstr(const hl_string* string)
+HL_INLINE char* hl_string_cstr(const hl_string* string)
 {
     hl_assert(string != NULL);
     return string->start;
 }
 
-__HL_INLINE__ size_t hl_string_cap(const hl_string* string)
+HL_INLINE size_t hl_string_cap(const hl_string* string)
 {
     hl_assert(string != NULL);
     return string->start == string->sso ? __HL_STRING_SSO_LEN : string->cap - 1;

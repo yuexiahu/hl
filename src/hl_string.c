@@ -1,6 +1,6 @@
 #include "hl_string.h"
 
-__HL_INLINE__ size_t hl_better_size(size_t size)
+HL_INLINE size_t hl_better_size(size_t size)
 {
     size_t res = (__HL_STRING_SSO_LEN + 1) << 1;
     while(res < size)
@@ -33,31 +33,31 @@ void hl_string_clear(hl_string* string)
     string->len = 0;
 }
 
-void hl_string_set(hl_string* string, const hl_string* data)
+void hl_string_clone(hl_string* string, const hl_string* from)
 {
     hl_assert(string != NULL);
-    if(data == NULL)
+    if(from == NULL)
     {
         hl_string_clear(string);
         return;
     }
-    size_t len = hl_string_len(data);
+    size_t len = hl_string_len(from);
     hl_string_reserve(string, len);
-    memcpy(string->start, data->start, len + 1);
+    memcpy(string->start, from->start, len + 1);
     string->len = len;
 }
 
-void hl_string_set_cstr(hl_string* string, const char* data)
+void hl_string_clone_cstr(hl_string* string, const char* from)
 {
     hl_assert(string != NULL);
-    if(data == NULL)
+    if(from == NULL)
     {
         hl_string_clear(string);
         return;
     }
-    size_t len = strlen(data);
+    size_t len = strlen(from);
     hl_string_reserve(string, len);
-    memcpy(string->start, data, len + 1);
+    memcpy(string->start, from, len + 1);
     string->len = len;
 }
 

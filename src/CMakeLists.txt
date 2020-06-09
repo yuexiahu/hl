@@ -34,4 +34,4 @@ target_include_directories(hl
         $<INSTALL_INTERFACE:include/hl>
     )
 set_target_properties(hl PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-target_compile_options(hl PUBLIC -fno-strict-aliasing)
+#target_compile_options(hl PUBLIC -fno-strict-aliasing)

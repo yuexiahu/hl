@@ -26,18 +26,18 @@ void hl_slist_clear(hl_slist* slist)
     slist->next = NULL;
 }
 
-void hl_slist_set(hl_slist* slist, const hl_slist* data, size_t item_size)
+void hl_slist_clone(hl_slist* slist, const hl_slist* from, size_t item_size)
 {
     hl_assert(slist != NULL);
     hl_slist_clear(slist);
-    if(data == NULL)
+    if(from == NULL)
     {
         return;
     }
 
     hl_slist_node* iter = slist;
-    hl_slist_node* iter_data = hl_slist_begin(data);
-    while(iter_data != hl_slist_end(data))
+    hl_slist_node* iter_data = hl_slist_begin(from);
+    while(iter_data != hl_slist_end(from))
     {
         hl_slist_insert_after(slist, iter, hl_slist_at(iter_data), item_size);
         hl_slist_next(&iter);

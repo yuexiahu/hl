@@ -1,6 +1,6 @@
 #include "hl_vector.h"
 
-__HL_INLINE__ size_t hl_better_size(size_t size)
+HL_INLINE size_t hl_better_size(size_t size)
 {
     size_t res = 8;
     while(res < size)
@@ -44,10 +44,10 @@ void hl_vector_clear(hl_vector* vector)
     vector->len = 0;
 }
 
-void hl_vector_set(hl_vector* vector, const hl_vector* data)
+void hl_vector_clone(hl_vector* vector, const hl_vector* from)
 {
     hl_assert(vector != NULL);
-    if(data == NULL)
+    if(from == NULL)
     {
         hl_vector_clear(vector);
         return;
@@ -55,20 +55,20 @@ void hl_vector_set(hl_vector* vector, const hl_vector* data)
     hl_assert(hl_vector_item_size(vector) == hl_vector_item_size(data));
 
     hl_vector_reserve(vector, hl_vector_len(vector));
-    memcpy(vector->items, data->items, hl_vector_len(vector) * hl_vector_item_size(vector));
-    vector->len = hl_vector_len(data);
+    memcpy(vector->items, from->items, hl_vector_len(vector) * hl_vector_item_size(vector));
+    vector->len = hl_vector_len(from);
 }
 
-void hl_vector_set_array(hl_vector* vector, const void* data, size_t len)
+void hl_vector_clone_array(hl_vector* vector, const void* from, size_t len)
 {
     hl_assert(vector != NULL);
-    if(data == NULL || len == 0)
+    if(from == NULL || len == 0)
     {
         hl_vector_clear(vector);
         return;
     }
     hl_vector_reserve(vector, len);
-    memcpy(vector->items, data, len * hl_vector_item_size(vector));
+    memcpy(vector->items, from, len * hl_vector_item_size(vector));
     vector->len = len;
 }
 

@@ -18,7 +18,7 @@
 #define NULL ((void*)0)
 #endif
 
-#define __HL_INLINE__ static inline
+#define HL_INLINE static inline
 
 #define hl_assert assert
 #define hl_log(fmt, ...)                                                                                               \

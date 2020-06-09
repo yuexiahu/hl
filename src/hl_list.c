@@ -1,12 +1,11 @@
 #include "hl_list.h"
 #include "hl_defs.h"
 
-void hl_list_new(hl_list* list, size_t item_size)
+void hl_list_new(hl_list* list)
 {
     hl_assert(list != NULL);
     hl_assert(item_size != 0);
     list->len = 0;
-    list->item_size = item_size;
     list->node = hl_malloc(sizeof(hl_list_node));
     list->node->next = list->node;
     list->node->prev = list->node;
@@ -34,47 +33,46 @@ void hl_list_clear(hl_list* list)
     list->node->prev = list->node;
 }
 
-void hl_list_set(hl_list* list, const hl_list* data)
+void hl_list_clone(hl_list* list, const hl_list* from, size_t item_size)
 {
     hl_assert(list != NULL);
     hl_list_clear(list);
-    if(data == NULL)
+    if(from == NULL)
     {
         return;
     }
 
-    list->item_size = data->item_size;
     hl_list_node* iter = hl_list_begin(list);
-    hl_list_node* iter_data = hl_list_begin(data);
-    while(iter_data != hl_list_end(data))
+    hl_list_node* iter_data = hl_list_begin(from);
+    while(iter_data != hl_list_end(from))
     {
-        hl_list_insert(list, iter, hl_list_at(iter_data));
+        hl_list_insert(list, iter, hl_list_at(iter_data), item_size);
         hl_list_next(&iter_data);
     }
 }
 
-void hl_list_append(hl_list* list, const void* item)
+void hl_list_append(hl_list* list, const void* item, size_t item_size)
 {
     hl_assert(list != NULL);
 
     hl_list_node* iter = hl_list_end(list);
-    hl_list_insert(list, iter, item);
+    hl_list_insert(list, iter, item, item_size);
 }
 
-void hl_list_prepend(hl_list* list, const void* item)
+void hl_list_prepend(hl_list* list, const void* item, size_t item_size)
 {
     hl_assert(list != NULL);
 
     hl_list_node* iter = hl_list_begin(list);
-    hl_list_insert(list, iter, item);
+    hl_list_insert(list, iter, item, item_size);
 }
 
-void hl_list_insert(hl_list* list, hl_list_node* iter, const void* item)
+void hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t item_size)
 {
     hl_assert(list != NULL && iter != NULL);
 
-    hl_list_node* node = hl_malloc(sizeof(hl_list_node) + hl_list_item_size(list));
-    memcpy(node->data, item, hl_list_item_size(list));
+    hl_list_node* node = hl_malloc(sizeof(hl_list_node) + item_size);
+    memcpy(node->data, item, item_size);
 
     hl_list_node* prev = iter->prev;
     prev->next = node;
