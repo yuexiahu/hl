@@ -52,7 +52,7 @@ void hl_vector_clone(hl_vector* vector, const hl_vector* from)
         hl_vector_clear(vector);
         return;
     }
-    hl_assert(hl_vector_item_size(vector) == hl_vector_item_size(data));
+    hl_assert(hl_vector_item_size(vector) == hl_vector_item_size(from));
 
     hl_vector_reserve(vector, hl_vector_len(vector));
     memcpy(vector->items, from->items, hl_vector_len(vector) * hl_vector_item_size(vector));

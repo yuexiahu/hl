@@ -4,7 +4,6 @@
 void hl_list_new(hl_list* list)
 {
     hl_assert(list != NULL);
-    hl_assert(item_size != 0);
     list->len = 0;
     list->node = hl_malloc(sizeof(hl_list_node));
     list->node->next = list->node;
