@@ -19,7 +19,7 @@ option(HL_BUILD_SHARED_LIBS "Build shared library" OFF)
 # add sub directories
 #================================
 add_subdirectory(src)
-if(${BUILD_TESTING} STREQUAL "ON")
+if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 

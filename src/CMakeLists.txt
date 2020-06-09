@@ -5,6 +5,8 @@ set(SOURCE_FILES
     hl_string.c
     hl_vector.c
     hl_list.c
+    hl_slist.c
+    hl_hashmap.c
     )
 
 set(HEADER_FILES
@@ -12,6 +14,8 @@ set(HEADER_FILES
     ${CMAKE_SOURCE_DIR}/include/hl_string.h
     ${CMAKE_SOURCE_DIR}/include/hl_vector.h
     ${CMAKE_SOURCE_DIR}/include/hl_list.h
+    ${CMAKE_SOURCE_DIR}/include/hl_slist.h
+    ${CMAKE_SOURCE_DIR}/include/hl_hashmap.h
     )
 
 if(${HL_BUILD_SHARED_LIBS} STREQUAL "ON")
