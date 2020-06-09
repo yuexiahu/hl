@@ -50,7 +50,7 @@ install(EXPORT hlTargets
     DESTINATION lib/cmake/hl
     )
 # generate cmake config file with dependence
-configure_file(hlConfig.cmake.in hlConfig.cmake @ONLY)
+configure_file(cmake/hlConfig.cmake.in hlConfig.cmake @ONLY)
 # install cmake config files
 install(
     FILES
