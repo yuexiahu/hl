@@ -235,7 +235,7 @@ CASE(test_list_clear_and_set)
     EXPECT_EQ_INT(10, hl_list_len(&list));
 
     hl_list_set(&list2, &list);
-    EXPECT_EQ_INT(10, hl_list_len(&list));
+    EXPECT_EQ_INT(10, hl_list_len(&list2));
     hl_list_node* iter = hl_list_begin(&list2);
     i = 0;
     while(iter != hl_list_end(&list2))

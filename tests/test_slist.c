@@ -7,10 +7,12 @@ CASE(test_slist_get_and_append)
     hl_slist_node* iter;
     int i;
     hl_slist_new(&slist);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
 
     for(i = 0; i < 10; ++i)
     {
         hl_slist_append(&slist, &i, sizeof(int));
+        EXPECT_EQ_INT(i + 1, hl_slist_len(&slist));
     }
     iter = hl_slist_begin(&slist);
     i = 0;
@@ -25,11 +27,13 @@ CASE(test_slist_get_and_append)
     hl_slist_free(&slist);
 
     hl_slist_new(&slist);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
 
     char ch = 0;
     for(i = 0; i < 10; ++i)
     {
         hl_slist_append(&slist, &ch, sizeof(char));
+        EXPECT_EQ_INT(i + 1, hl_slist_len(&slist));
         ++ch;
     }
     iter = hl_slist_begin(&slist);
@@ -46,10 +50,12 @@ CASE(test_slist_get_and_append)
 
     double double_num = 0;
     hl_slist_new(&slist);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
 
     for(i = 0; i < 10; ++i)
     {
         hl_slist_append(&slist, &double_num, sizeof(double));
+        EXPECT_EQ_INT(i + 1, hl_slist_len(&slist));
         ++double_num;
     }
     iter = hl_slist_begin(&slist);
@@ -71,10 +77,12 @@ CASE(test_slist_prepend)
     hl_slist_node* iter;
     int i;
     hl_slist_new(&slist);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
 
     for(i = 0; i < 10; ++i)
     {
         hl_slist_prepend(&slist, &i, sizeof(int));
+        EXPECT_EQ_INT(i + 1, hl_slist_len(&slist));
     }
 
     iter = hl_slist_begin(&slist);
@@ -90,11 +98,13 @@ CASE(test_slist_prepend)
     hl_slist_free(&slist);
 
     hl_slist_new(&slist);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
 
     char ch = 0;
     for(i = 0; i < 10; ++i)
     {
         hl_slist_prepend(&slist, &ch, sizeof(char));
+        EXPECT_EQ_INT(i + 1, hl_slist_len(&slist));
         ++ch;
     }
 
@@ -112,10 +122,12 @@ CASE(test_slist_prepend)
 
     double double_num = 0;
     hl_slist_new(&slist);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
 
     for(i = 0; i < 10; ++i)
     {
         hl_slist_prepend(&slist, &double_num, sizeof(double));
+        EXPECT_EQ_INT(i + 1, hl_slist_len(&slist));
         ++double_num;
     }
 
@@ -212,8 +224,12 @@ CASE(test_slist_swap)
     {
         hl_slist_append(&slist1, &i, sizeof(int));
     }
+    EXPECT_EQ_INT(10, hl_slist_len(&slist1));
+    EXPECT_EQ_INT(0, hl_slist_len(&slist2));
 
     hl_slist_swap(&slist1, &slist2);
+    EXPECT_EQ_INT(0, hl_slist_len(&slist1));
+    EXPECT_EQ_INT(10, hl_slist_len(&slist2));
 
     iter = hl_slist_begin(&slist2);
     i = 0;
@@ -241,15 +257,18 @@ CASE(test_slist_clear_and_set)
         hl_slist_append(&slist, &i, sizeof(int));
     }
 
+    EXPECT_EQ_INT(10, hl_slist_len(&slist));
     hl_slist_clear(&slist);
-    EXPECT(hl_slist_begin(&slist) == hl_slist_end(&slist));
 
+    EXPECT_EQ_INT(0, hl_slist_len(&slist));
     for(i = 0; i < 10; ++i)
     {
         hl_slist_append(&slist, &i, sizeof(int));
     }
+    EXPECT_EQ_INT(10, hl_slist_len(&slist));
 
     hl_slist_set(&slist2, &slist, sizeof(int));
+    EXPECT_EQ_INT(10, hl_slist_len(&slist2));
     hl_slist_node* iter = hl_slist_begin(&slist2);
     i = 0;
     while(iter != hl_slist_end(&slist2))

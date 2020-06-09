@@ -45,6 +45,20 @@ void hl_slist_set(hl_slist* slist, const hl_slist* data, size_t item_size)
     }
 }
 
+size_t hl_slist_len(const hl_slist* slist)
+{
+    hl_assert(slist != NULL);
+
+    size_t len = 0;
+    hl_slist_node* iter = hl_slist_begin(slist);
+    while(iter != hl_slist_end(slist))
+    {
+        ++len;
+        hl_slist_next(&iter);
+    }
+    return len;
+}
+
 void hl_slist_append(hl_slist* slist, const void* item, size_t item_size)
 {
     hl_assert(slist != NULL);
