@@ -144,7 +144,7 @@ CASE(test_list_prepend)
     hl_list_free(&list);
 }
 
-CASE(test_verctor_insert)
+CASE(test_list_insert)
 {
     hl_list list;
     int i;
@@ -246,7 +246,8 @@ CASE(test_list_clear_and_set)
     }
 
     hl_list_free(&list);
+    hl_list_free(&list2);
 }
 
-UNIT(test_list, test_list_get_and_append, test_list_prepend, test_verctor_insert, test_list_swap,
+UNIT(test_list, test_list_get_and_append, test_list_prepend, test_list_insert, test_list_swap,
      test_list_clear_and_set)

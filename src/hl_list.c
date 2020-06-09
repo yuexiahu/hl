@@ -45,21 +45,26 @@ void hl_list_set(hl_list* list, const hl_list* data)
 
     list->item_size = data->item_size;
     hl_list_node* iter = hl_list_begin(list);
-    while(iter != hl_list_end(list))
+    hl_list_node* iter_data = hl_list_begin(data);
+    while(iter_data != hl_list_end(data))
     {
-        hl_list_append(list, hl_list_at(iter));
-        hl_list_next(&iter);
+        hl_list_insert(list, iter, hl_list_at(iter_data));
+        hl_list_next(&iter_data);
     }
 }
 
 void hl_list_append(hl_list* list, const void* item)
 {
+    hl_assert(list != NULL);
+
     hl_list_node* iter = hl_list_end(list);
     hl_list_insert(list, iter, item);
 }
 
 void hl_list_prepend(hl_list* list, const void* item)
 {
+    hl_assert(list != NULL);
+
     hl_list_node* iter = hl_list_begin(list);
     hl_list_insert(list, iter, item);
 }

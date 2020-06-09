@@ -55,13 +55,13 @@ __HL_INLINE__ void hl_list_get(hl_list_node* iter, void* data, size_t item_size)
     memcpy(data, hl_list_at(iter), item_size);
 }
 
-__HL_INLINE__ hl_list_node* hl_list_begin(hl_list* list)
+__HL_INLINE__ hl_list_node* hl_list_begin(const hl_list* list)
 {
     hl_assert(list != NULL);
     return list->node->next;
 }
 
-__HL_INLINE__ hl_list_node* hl_list_end(hl_list* list)
+__HL_INLINE__ hl_list_node* hl_list_end(const hl_list* list)
 {
     hl_assert(list != NULL);
     return list->node;
@@ -78,6 +78,5 @@ __HL_INLINE__ void hl_list_prev(hl_list_node** iter)
     hl_assert(iter != NULL && *iter != NULL);
     *iter = (*iter)->prev;
 }
-
 
 #endif // HL_LIST_H_
