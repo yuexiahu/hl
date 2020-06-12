@@ -34,16 +34,16 @@ HL_INLINE void* hl_slist_at(hl_slist_node* iter)
     return iter->data;
 }
 
-HL_INLINE void hl_slist_get(hl_slist_node* iter, void* data, size_t item_size)
+HL_INLINE void hl_slist_get(hl_slist_node* iter, void* item, size_t item_size)
 {
-    hl_return_check(data != NULL);
-    memcpy(data, hl_slist_at(iter), item_size);
+    hl_return_check(item != NULL);
+    memcpy(item, hl_slist_at(iter), item_size);
 }
 
-HL_INLINE void hl_slist_set(hl_slist_node* iter, const void* data, size_t item_size)
+HL_INLINE void hl_slist_set(hl_slist_node* iter, const void* item, size_t item_size)
 {
-    hl_return_check(data != NULL);
-    memcpy(hl_slist_at(iter), data, item_size);
+    hl_return_check(item != NULL);
+    memcpy(hl_slist_at(iter), item, item_size);
 }
 
 HL_INLINE hl_slist_node* hl_slist_begin(const hl_slist* slist)

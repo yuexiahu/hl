@@ -46,16 +46,16 @@ HL_INLINE void* hl_hashmap_at(hl_hashmap_node* iter)
     return iter->data;
 }
 
-HL_INLINE void hl_hashmap_get(hl_hashmap_node* iter, void* data, size_t item_size)
+HL_INLINE void hl_hashmap_get(hl_hashmap_node* iter, void* item, size_t item_size)
 {
     hl_return_check(data != NULL);
-    memcpy(data, hl_hashmap_at(iter), item_size);
+    memcpy(item, hl_hashmap_at(iter), item_size);
 }
 
-HL_INLINE void hl_hashmap_set(hl_hashmap_node* iter, const void* data, size_t item_size)
+HL_INLINE void hl_hashmap_set(hl_hashmap_node* iter, const void* item, size_t item_size)
 {
     hl_return_check(data != NULL);
-    memcpy(hl_hashmap_at(iter), data, item_size);
+    memcpy(hl_hashmap_at(iter), item, item_size);
 }
 
 hl_hashmap_node* hl_hashmap_begin(const hl_hashmap* hashmap);
