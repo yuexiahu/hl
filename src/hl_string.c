@@ -11,7 +11,7 @@ HL_INLINE size_t hl_better_size(size_t size)
 void hl_string_new(hl_string* string)
 {
     hl_assert(string != NULL);
-    string->start = string->sso;
+    string->start = NULL;
     string->len = 0;
     string->cap = 0;
 }
@@ -19,7 +19,7 @@ void hl_string_new(hl_string* string)
 void hl_string_free(hl_string* string)
 {
     hl_assert(string != NULL);
-    if(string->start != string->sso)
+    if(string->start)
     {
         hl_free(string->start);
     }
@@ -29,7 +29,7 @@ void hl_string_free(hl_string* string)
 void hl_string_clear(hl_string* string)
 {
     hl_assert(string != NULL);
-    string->start[0] = 0;
+    hl_string_cstr(string)[0] = '\0';
     string->len = 0;
 }
 
@@ -43,7 +43,7 @@ void hl_string_clone(hl_string* string, const hl_string* from)
     }
     size_t len = hl_string_len(from);
     hl_string_reserve(string, len);
-    memcpy(string->start, from->start, len + 1);
+    memcpy(hl_string_cstr(string), hl_string_cstr((hl_string*)from), len + 1);
     string->len = len;
 }
 
@@ -57,7 +57,7 @@ void hl_string_clone_cstr(hl_string* string, const char* from)
     }
     size_t len = strlen(from);
     hl_string_reserve(string, len);
-    memcpy(string->start, from, len + 1);
+    memcpy(hl_string_cstr(string), from, len + 1);
     string->len = len;
 }
 
@@ -70,7 +70,7 @@ void hl_string_append(hl_string* string, const hl_string* data)
     }
     size_t len = hl_string_len(data);
     hl_string_reserve(string, hl_string_len(string) + len);
-    memcpy(hl_string_cstr(string) + hl_string_len(string), hl_string_cstr(data), len + 1);
+    memcpy(hl_string_cstr(string) + hl_string_len(string), hl_string_cstr((hl_string*)data), len + 1);
     string->len += len;
 }
 
@@ -99,7 +99,7 @@ void hl_string_prepend(hl_string* string, const hl_string* data)
     {
         hl_string_reserve(string, hl_string_len(string) + len);
         memmove(hl_string_cstr(string) + hl_string_len(data), hl_string_cstr(string), hl_string_len(string) + 1);
-        memcpy(hl_string_cstr(string), hl_string_cstr(data), len);
+        memcpy(hl_string_cstr(string), hl_string_cstr((hl_string*)data), len);
         string->len += len;
     }
 }
@@ -130,7 +130,7 @@ void hl_string_reserve(hl_string* string, size_t len)
     }
 
     size_t cap = hl_better_size(len + 1);
-    if(string->start == string->sso)
+    if(!string->start)
     {
         string->start = hl_malloc(cap);
         strcpy(string->start, string->sso);
@@ -145,7 +145,7 @@ void hl_string_reserve(hl_string* string, size_t len)
 void hl_string_shrink_to_fit(hl_string* string)
 {
     hl_assert(string != NULL);
-    if(string->start == string->sso)
+    if(!string->start)
     {
         return;
     }
@@ -155,7 +155,7 @@ void hl_string_shrink_to_fit(hl_string* string)
     {
         memcpy(string->sso, string->start, len + 1);
         hl_free(string->start);
-        string->start = string->sso;
+        string->start = NULL;
     }
     else
     {
@@ -171,27 +171,11 @@ void hl_string_shrink_to_fit(hl_string* string)
     }
 }
 
-static inline void hl_string_move(hl_string* dest, hl_string* src)
-{
-    if(src->start != src->sso)
-    {
-        dest->start = src->start;
-        dest->len = src->len;
-        dest->cap = src->cap;
-    }
-    else
-    {
-        dest->start = dest->sso;
-        dest->len = src->len;
-        memcpy(dest->sso, src->sso, src->len + 1);
-    }
-}
-
 void hl_string_swap(hl_string* string1, hl_string* string2)
 {
     hl_assert(string1 != NULL && string2 != NULL);
     hl_string tmp;
-    hl_string_move(&tmp, string1);
-    hl_string_move(string1, string2);
-    hl_string_move(string2, &tmp);
+    memcpy(&tmp, string1, sizeof(hl_string));
+    memcpy(string1, string2, sizeof(hl_string));
+    memcpy(string2, &tmp, sizeof(hl_string));
 }

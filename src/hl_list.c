@@ -4,10 +4,10 @@
 void hl_list_new(hl_list* list)
 {
     hl_assert(list != NULL);
-    list->len = 0;
-    list->node = hl_malloc(sizeof(hl_list_node));
+    list->node = hl_malloc(sizeof(hl_list_node)+sizeof(size_t));
     list->node->next = list->node;
     list->node->prev = list->node;
+    *(size_t*)list->node->data = 0;
 }
 
 void hl_list_free(hl_list* list)
@@ -27,9 +27,9 @@ void hl_list_clear(hl_list* list)
         hl_free(node);
         node = next;
     }
-    list->len = 0;
     list->node->next = list->node;
     list->node->prev = list->node;
+    *(size_t*)list->node->data = 0;
 }
 
 void hl_list_clone(hl_list* list, const hl_list* from, size_t item_size)
@@ -79,7 +79,7 @@ void hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t 
     node->next = iter;
     iter->prev = node;
 
-    list->len += 1;
+    *(size_t*)list->node->data += 1;
 }
 
 void hl_list_swap(hl_list* list1, hl_list* list2)
@@ -105,7 +105,8 @@ hl_list_node* hl_list_erase(hl_list* list, hl_list_node* iter)
     next->prev = iter->prev;
     iter->prev->next = next;
     hl_free(iter);
-    list->len -= 1;
+
+    *(size_t*)list->node->data -= 1;
     return next;
 }
 

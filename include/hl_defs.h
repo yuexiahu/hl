@@ -6,12 +6,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define hl_free free
-#define hl_malloc malloc
-#define hl_realloc realloc
-
 #ifndef BOOL
 #define BOOL int
+#endif
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
 #endif
 
 #ifndef NULL
@@ -59,5 +63,25 @@
         hl_err(#exp " check failed!");                                                                                 \
         return (value);                                                                                                \
     }
+
+
+/// config allocator
+#define hl_free free
+#define hl_malloc malloc
+#define hl_realloc realloc
+
+HL_INLINE void* hl_calloc(size_t num, size_t size)
+{
+    size_t len = num * size;
+    void* ret = malloc(len);
+    memset(ret, 0, len);
+    return ret;
+}
+
+/// config string sso length
+#define __HL_STRING_SSO_LEN 15
+
+/// config hashmap load factor
+#define __HL_HASHMAP_LOAD_FACTOR 0.75
 
 #endif // HL_DEFS_

@@ -12,7 +12,6 @@ typedef struct hl_list_node
 
 typedef struct hl_list
 {
-    size_t len;
     hl_list_node* node;
 } hl_list;
 
@@ -25,7 +24,7 @@ void hl_list_clone(hl_list* list, const hl_list* from, size_t item_size);
 HL_INLINE size_t hl_list_len(const hl_list* list)
 {
     hl_assert(list != NULL);
-    return list->len;
+    return *(size_t*)list->node->data;
 }
 
 void hl_list_append(hl_list* list, const void* item, size_t item_size);

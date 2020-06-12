@@ -3,8 +3,6 @@
 
 #include "hl_defs.h"
 
-#define __HL_STRING_SSO_LEN 15
-
 typedef struct hl_string
 {
     char* start;
@@ -28,16 +26,16 @@ HL_INLINE size_t hl_string_len(const hl_string* string)
     return string->len;
 }
 
-HL_INLINE char* hl_string_cstr(const hl_string* string)
+HL_INLINE char* hl_string_cstr(hl_string* string)
 {
     hl_assert(string != NULL);
-    return string->start;
+    return string->start ? string->start : string->sso;
 }
 
 HL_INLINE size_t hl_string_cap(const hl_string* string)
 {
     hl_assert(string != NULL);
-    return string->start == string->sso ? __HL_STRING_SSO_LEN : string->cap - 1;
+    return string->start ? string->cap - 1 : __HL_STRING_SSO_LEN;
 }
 
 void hl_string_append(hl_string* string, const hl_string* data);
