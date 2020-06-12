@@ -128,8 +128,9 @@ void hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t it
         }
     }
 
-    hl_hashmap_node* tmp = hl_malloc(sizeof(hl_hashmap_node));
+    hl_hashmap_node* tmp = hl_malloc(sizeof(hl_hashmap_node)+item_size);
     tmp->next = first;
+    memcpy(tmp->data, item, item_size);
     hashmap->buckets[bucket] = tmp;
     ++hashmap->len;
 }
