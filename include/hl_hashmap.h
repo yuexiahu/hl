@@ -32,8 +32,8 @@ HL_INLINE size_t hl_hashmap_len(const hl_hashmap* hashmap)
     return hashmap->len;
 }
 
-void hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t item_size);
-void hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t item_size);
+hl_hashmap_node* hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t item_size);
+hl_hashmap_node* hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t item_size);
 void hl_hashmap_swap(hl_hashmap* hashmap1, hl_hashmap* hashmap2);
 hl_hashmap_node* hl_hashmap_erase(hl_hashmap* hashmap, hl_hashmap_node* iter);
 hl_hashmap_node* hl_hashmap_find(const hl_hashmap* hashmap, const void* item);
@@ -62,6 +62,10 @@ hl_hashmap_node* hl_hashmap_begin(const hl_hashmap* hashmap);
 hl_hashmap_node* hl_hashmap_end(const hl_hashmap* hashmap);
 void hl_hashmap_next(const hl_hashmap* hashmap, hl_hashmap_node** iter);
 
-void hl_hashmap_resize(hl_hashmap* hashmap, size_t len_hint);
+void hl_hashmap_resize(hl_hashmap* hashmap, size_t bucket_size_hint);
+void hl_hashmap_reserve(hl_hashmap* hashmap, size_t len_hint);
+
+/// hash functions
+size_t hl_hash_cstr(const char* cstr);
 
 #endif //HL_HASHMAP_H_

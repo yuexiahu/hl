@@ -47,7 +47,6 @@ void hl_hashmap_new(hl_hashmap* hashmap,
 {
     hl_assert(hashmap != NULL && hash_key != NULL && equals != NULL);
 
-    size_t bucket_size;
     hashmap->hash_key = hash_key;
     hashmap->equals = equals;
     hashmap->len = 0;
@@ -109,7 +108,7 @@ void hl_hashmap_clone(hl_hashmap* hashmap, const hl_hashmap* from, size_t item_s
         hl_free(hashmap->buckets);
         hashmap->buckets = buckets;
     }
-    for(size_t n; n < from->bucket_size; ++n)
+    for(size_t n = 0; n < from->bucket_size; ++n)
     {
         hl_hashmap_node* cur = from->buckets[n];
         if(cur)
@@ -128,15 +127,15 @@ void hl_hashmap_clone(hl_hashmap* hashmap, const hl_hashmap* from, size_t item_s
     hashmap->len = from->len;
 }
 
-void hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t item_size)
+hl_hashmap_node* hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t item_size)
 {
     hl_assert(hashmap != NULL);
 
-    hl_hashmap_resize(hashmap, hl_hashmap_len(hashmap)+1);
-    hl_hashmap_insert_noresize(hashmap, item, item_size);
+    hl_hashmap_reserve(hashmap, hl_hashmap_len(hashmap)+1);
+    return hl_hashmap_insert_noresize(hashmap, item, item_size);
 }
 
-void hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t item_size)
+hl_hashmap_node* hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t item_size)
 {
     hl_assert(hashmap != NULL);
 
@@ -147,7 +146,7 @@ void hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t it
     {
         if(hashmap->equals(item, cur->data))
         {
-            return;
+            return cur;
         }
     }
 
@@ -156,6 +155,7 @@ void hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t it
     memcpy(tmp->data, item, item_size);
     hashmap->buckets[bucket] = tmp;
     ++hashmap->len;
+    return tmp;
 }
 
 void hl_hashmap_swap(hl_hashmap* hashmap1, hl_hashmap* hashmap2)
@@ -244,7 +244,7 @@ void hl_hashmap_next(const hl_hashmap* hashmap, hl_hashmap_node** iter)
     hl_hashmap_node* old = *iter;
     *iter = old->next;
 
-    if(*iter)
+    if(!*iter)
     {
         size_t bucket = _hl_hashmap_bucket_num(hashmap, old->data, hashmap->bucket_size);
         while(!*iter && ++bucket < hashmap->bucket_size)
@@ -254,14 +254,14 @@ void hl_hashmap_next(const hl_hashmap* hashmap, hl_hashmap_node** iter)
     }
 }
 
-void hl_hashmap_resize(hl_hashmap* hashmap, size_t len_hint)
+void hl_hashmap_resize(hl_hashmap* hashmap, size_t bucket_size_hint)
 {
     hl_assert(hashmap != NULL);
 
     size_t old_bucket_size = hashmap->bucket_size;
-    if(len_hint > old_bucket_size)
+    if(bucket_size_hint > old_bucket_size)
     {
-        size_t new_bucket_size = _hl_next_prime(len_hint);
+        size_t new_bucket_size = _hl_next_prime(bucket_size_hint);
         if(new_bucket_size > old_bucket_size)
         {
             hl_hashmap_node** new_buckets = hl_calloc(new_bucket_size, sizeof(hl_hashmap_node*));
@@ -279,6 +279,27 @@ void hl_hashmap_resize(hl_hashmap* hashmap, size_t len_hint)
             }
             hl_free(hashmap->buckets);
             hashmap->buckets = new_buckets;
+            hashmap->bucket_size = new_bucket_size;
         }
     }
+}
+
+void hl_hashmap_reserve(hl_hashmap* hashmap, size_t len_hint)
+{
+    hl_hashmap_resize(hashmap, len_hint/__HL_HASHMAP_LOAD_FACTOR);
+}
+
+size_t hl_hash_cstr(const char* cstr)
+{
+    size_t hash = 0;
+    if(cstr == NULL)
+    {
+        return 0;
+    }
+
+    while(*cstr)
+    {
+        hash = hash*131 + *(cstr++);
+    }
+    return hash;
 }
