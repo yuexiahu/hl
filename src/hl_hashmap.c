@@ -103,6 +103,29 @@ void hl_hashmap_clone(hl_hashmap* hashmap, const hl_hashmap* from, size_t item_s
     hl_assert(hashmap != NULL && from != NULL);
 
     hl_hashmap_clear(hashmap);
+    if(from->bucket_size > hashmap->bucket_size)
+    {
+        hl_hashmap_node** buckets = hl_calloc(from->bucket_size, sizeof(hl_hashmap_node*));
+        hl_free(hashmap->buckets);
+        hashmap->buckets = buckets;
+    }
+    for(size_t n; n < from->bucket_size; ++n)
+    {
+        hl_hashmap_node* cur = from->buckets[n];
+        if(cur)
+        {
+            hl_hashmap_node* copy = hl_malloc(sizeof(hl_hashmap_node)+item_size);
+            memcpy(copy->data, cur->data, item_size);
+            hashmap->buckets[n] = copy;
+
+            for(hl_hashmap_node* next = cur->next; next; cur = next, next = cur->next)
+            {
+                copy->next = hl_malloc(sizeof(hl_hashmap_node)+item_size);
+                copy = copy->next;
+            }
+        }
+    }
+    hashmap->len = from->len;
 }
 
 void hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t item_size)
