@@ -48,13 +48,13 @@ HL_INLINE void* hl_hashmap_at(hl_hashmap_node* iter)
 
 HL_INLINE void hl_hashmap_get(hl_hashmap_node* iter, void* item, size_t item_size)
 {
-    hl_return_check(data != NULL);
+    hl_return_check(item != NULL);
     memcpy(item, hl_hashmap_at(iter), item_size);
 }
 
 HL_INLINE void hl_hashmap_set(hl_hashmap_node* iter, const void* item, size_t item_size)
 {
-    hl_return_check(data != NULL);
+    hl_return_check(item != NULL);
     memcpy(hl_hashmap_at(iter), item, item_size);
 }
 
