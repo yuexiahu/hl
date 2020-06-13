@@ -1,15 +1,11 @@
 #include "hl_hashmap.h"
 
 #define _hl_num_primes 28
-static const size_t _hl_prime_list[_hl_num_primes] =
-{
-    53ul,         97ul,         193ul,       389ul,       769ul,
-    1543ul,       3079ul,       6151ul,      12289ul,     24593ul,
-    49157ul,      98317ul,      196613ul,    393241ul,    786433ul,
-    1572869ul,    3145739ul,    6291469ul,   12582917ul,  25165843ul,
-    50331653ul,   100663319ul,  201326611ul, 402653189ul, 805306457ul, 
-    1610612741ul, 3221225473ul, 4294967291ul
-};
+static const size_t _hl_prime_list[_hl_num_primes] = {
+    53ul,        97ul,        193ul,       389ul,       769ul,        1543ul,       3079ul,
+    6151ul,      12289ul,     24593ul,     49157ul,     98317ul,      196613ul,     393241ul,
+    786433ul,    1572869ul,   3145739ul,   6291469ul,   12582917ul,   25165843ul,   50331653ul,
+    100663319ul, 201326611ul, 402653189ul, 805306457ul, 1610612741ul, 3221225473ul, 4294967291ul};
 
 HL_INLINE size_t _hl_lower_bound(const size_t* a, int n, size_t x)
 {
@@ -33,7 +29,7 @@ HL_INLINE size_t _hl_lower_bound(const size_t* a, int n, size_t x)
 HL_INLINE size_t _hl_next_prime(size_t n)
 {
     const size_t pos = _hl_lower_bound(_hl_prime_list, _hl_num_primes, n);
-    return _hl_prime_list[pos < _hl_num_primes ? pos : (_hl_num_primes-1)];
+    return _hl_prime_list[pos < _hl_num_primes ? pos : (_hl_num_primes - 1)];
 }
 
 HL_INLINE size_t _hl_hashmap_bucket_num(const hl_hashmap* hashmap, const void* item, size_t bucket_size)
@@ -41,8 +37,7 @@ HL_INLINE size_t _hl_hashmap_bucket_num(const hl_hashmap* hashmap, const void* i
     return hashmap->hash_key(item) % bucket_size;
 }
 
-void hl_hashmap_new(hl_hashmap* hashmap,
-                    size_t (*hash_key)(const void* item),
+void hl_hashmap_new(hl_hashmap* hashmap, size_t (*hash_key)(const void* item),
                     BOOL (*equals)(const void* item1, const void* item2))
 {
     hl_assert(hashmap != NULL && hash_key != NULL && equals != NULL);
@@ -65,7 +60,7 @@ void hl_hashmap_free(hl_hashmap* hashmap)
     for(size_t n = 0; n < hashmap->bucket_size; ++n)
     {
         node = hashmap->buckets[n];
-        while(node != NULL)
+        while(node)
         {
             hl_hashmap_node* next = node->next;
             hl_free(node);
@@ -86,7 +81,7 @@ void hl_hashmap_clear(hl_hashmap* hashmap)
     for(size_t n = 0; n < hashmap->bucket_size; ++n)
     {
         node = hashmap->buckets[n];
-        while(node != NULL)
+        while(node)
         {
             hl_hashmap_node* next = node->next;
             hl_free(node);
@@ -107,20 +102,24 @@ void hl_hashmap_clone(hl_hashmap* hashmap, const hl_hashmap* from, size_t item_s
         hl_hashmap_node** buckets = hl_calloc(from->bucket_size, sizeof(hl_hashmap_node*));
         hl_free(hashmap->buckets);
         hashmap->buckets = buckets;
+        hashmap->bucket_size = from->bucket_size;
     }
     for(size_t n = 0; n < from->bucket_size; ++n)
     {
-        hl_hashmap_node* cur = from->buckets[n];
-        if(cur)
+        hl_hashmap_node* node = from->buckets[n];
+        if(node)
         {
-            hl_hashmap_node* copy = hl_malloc(sizeof(hl_hashmap_node)+item_size);
-            memcpy(copy->data, cur->data, item_size);
+            hl_hashmap_node* copy = hl_malloc(sizeof(hl_hashmap_node) + item_size);
+            copy->next = NULL;
+            memcpy(copy->data, node->data, item_size);
             hashmap->buckets[n] = copy;
 
-            for(hl_hashmap_node* next = cur->next; next; cur = next, next = cur->next)
+            for(hl_hashmap_node* next = node->next; next; node = next, next = node->next)
             {
-                copy->next = hl_malloc(sizeof(hl_hashmap_node)+item_size);
+                copy->next = hl_malloc(sizeof(hl_hashmap_node) + item_size);
                 copy = copy->next;
+                copy->next = NULL;
+                memcpy(copy->data, node->data, item_size);
             }
         }
     }
@@ -131,7 +130,7 @@ hl_hashmap_node* hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t
 {
     hl_assert(hashmap != NULL);
 
-    hl_hashmap_reserve(hashmap, hl_hashmap_len(hashmap)+1);
+    hl_hashmap_reserve(hashmap, hl_hashmap_len(hashmap) + 1);
     return hl_hashmap_insert_noresize(hashmap, item, item_size);
 }
 
@@ -150,12 +149,12 @@ hl_hashmap_node* hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* ite
         }
     }
 
-    hl_hashmap_node* tmp = hl_malloc(sizeof(hl_hashmap_node)+item_size);
-    tmp->next = first;
-    memcpy(tmp->data, item, item_size);
-    hashmap->buckets[bucket] = tmp;
+    hl_hashmap_node* node = hl_malloc(sizeof(hl_hashmap_node) + item_size);
+    node->next = first;
+    memcpy(node->data, item, item_size);
+    hashmap->buckets[bucket] = node;
     ++hashmap->len;
-    return tmp;
+    return node;
 }
 
 void hl_hashmap_swap(hl_hashmap* hashmap1, hl_hashmap* hashmap2)
@@ -164,7 +163,7 @@ void hl_hashmap_swap(hl_hashmap* hashmap1, hl_hashmap* hashmap2)
     hl_hashmap tmp;
     memcpy(&tmp, hashmap1, sizeof(hl_hashmap));
     memcpy(hashmap1, hashmap2, sizeof(hl_hashmap));
-    memcpy(hashmap1, &tmp, sizeof(hl_hashmap));
+    memcpy(hashmap2, &tmp, sizeof(hl_hashmap));
 }
 
 hl_hashmap_node* hl_hashmap_erase(hl_hashmap* hashmap, hl_hashmap_node* iter)
@@ -172,11 +171,11 @@ hl_hashmap_node* hl_hashmap_erase(hl_hashmap* hashmap, hl_hashmap_node* iter)
     hl_assert(hashmap != NULL);
 
     size_t bucket = _hl_hashmap_bucket_num(hashmap, hl_hashmap_at(iter), hashmap->bucket_size);
-    hl_hashmap_node* prev_iter = hashmap->buckets[bucket];
-    hl_hashmap_node* next_iter = iter;
-    hl_hashmap_next(hashmap, &next_iter);
+    hl_hashmap_node* prev = hashmap->buckets[bucket];
+    hl_hashmap_node* next = iter;
+    hl_hashmap_next(hashmap, &next);
 
-    if(prev_iter == iter)
+    if(prev == iter)
     {
         hashmap->buckets[bucket] = iter->next;
         hl_free(iter);
@@ -184,19 +183,19 @@ hl_hashmap_node* hl_hashmap_erase(hl_hashmap* hashmap, hl_hashmap_node* iter)
     }
     else
     {
-        while(prev_iter)
+        while(prev)
         {
-            if(prev_iter->next == iter)
+            if(prev->next == iter)
             {
-                prev_iter->next = iter->next;
+                prev->next = iter->next;
                 hl_free(iter);
                 --hashmap->len;
                 break;
             }
-            prev_iter = prev_iter->next;
+            prev = prev->next;
         }
     }
-    return next_iter;
+    return next;
 }
 
 hl_hashmap_node* hl_hashmap_find(const hl_hashmap* hashmap, const void* item)
@@ -204,31 +203,29 @@ hl_hashmap_node* hl_hashmap_find(const hl_hashmap* hashmap, const void* item)
     hl_assert(hashmap != NULL);
 
     size_t bucket = _hl_hashmap_bucket_num(hashmap, item, hashmap->bucket_size);
-    hl_hashmap_node* iter = hashmap->buckets[bucket];
-    while(iter != NULL)
+    hl_hashmap_node* node = hashmap->buckets[bucket];
+    while(node != NULL)
     {
-        if(hashmap->equals(iter->data, item))
+        if(hashmap->equals(node->data, item))
         {
             break;
         }
-        iter = iter->next;
+        node = node->next;
     }
-    return iter;
+    return node;
 }
 
 hl_hashmap_node* hl_hashmap_begin(const hl_hashmap* hashmap)
 {
     hl_assert(hashmap != NULL);
-    hl_hashmap_node* iter = NULL;
     for(size_t n = 0; n < hashmap->bucket_size; ++n)
     {
         if(hashmap->buckets[n])
         {
-            iter = hashmap->buckets[n];
-            break;
+            return hashmap->buckets[n];
         }
     }
-    return iter;
+    return NULL;
 }
 
 hl_hashmap_node* hl_hashmap_end(const hl_hashmap* hashmap)
@@ -286,12 +283,14 @@ void hl_hashmap_resize(hl_hashmap* hashmap, size_t bucket_size_hint)
 
 void hl_hashmap_reserve(hl_hashmap* hashmap, size_t len_hint)
 {
-    hl_hashmap_resize(hashmap, len_hint/__HL_HASHMAP_LOAD_FACTOR);
+    hl_hashmap_resize(hashmap, len_hint / __HL_HASHMAP_LOAD_FACTOR);
 }
 
-size_t hl_hash_cstr(const char* cstr)
+/// hash functions
+size_t hl_hash_cstr(const void* cstr_key)
 {
     size_t hash = 0;
+    const char* cstr = cstr_key;
     if(cstr == NULL)
     {
         return 0;
@@ -299,7 +298,61 @@ size_t hl_hash_cstr(const char* cstr)
 
     while(*cstr)
     {
-        hash = hash*131 + *(cstr++);
+        hash = hash * 131 + *(cstr++);
     }
     return hash;
 }
+size_t hl_hash_int(const void* int_key)
+{
+    const int* pint = int_key;
+    if(pint == NULL)
+    {
+        return 0;
+    }
+    return *pint;
+}
+#define HL_HASH_INT(func, bit)                                                                                         \
+    size_t func(const void* key)                                                                                       \
+    {                                                                                                                  \
+        const int##bit##_t* pint = key;                                                                                \
+        if(pint == NULL)                                                                                               \
+        {                                                                                                              \
+            return 0;                                                                                                  \
+        }                                                                                                              \
+        return *pint;                                                                                                  \
+    }
+HL_HASH_INT(hl_hash_int8, 8)
+HL_HASH_INT(hl_hash_int16, 16)
+HL_HASH_INT(hl_hash_int32, 32)
+HL_HASH_INT(hl_hash_int64, 64)
+
+/// equals functions
+BOOL hl_equals_cstr(const void* cstr_key1, const void* cstr_key2)
+{
+    if(cstr_key1 == NULL || cstr_key2 == NULL)
+    {
+        return cstr_key1 == cstr_key2;
+    }
+    return strcmp(cstr_key1, cstr_key2) == 0;
+}
+BOOL hl_equals_int(const void* int_key1, const void* int_key2)
+{
+    if(int_key1 == NULL || int_key2 == NULL)
+    {
+        return int_key1 == int_key2;
+    }
+    return *(int*)int_key1 == *(int*)int_key2;
+}
+#define HL_EQUALS_INT(func, bit)                                                                                       \
+    BOOL func(const void* key1, const void* key2)                                                                      \
+    {                                                                                                                  \
+        if(key1 == NULL || key2 == NULL)                                                                               \
+        {                                                                                                              \
+            return key1 == key2;                                                                                       \
+        }                                                                                                              \
+        return *(int##bit##_t*)key1 == *(int##bit##_t*)key2;                                                           \
+    }
+HL_EQUALS_INT(hl_equals_int8, 8)
+HL_EQUALS_INT(hl_equals_int16, 16)
+HL_EQUALS_INT(hl_equals_int32, 32)
+HL_EQUALS_INT(hl_equals_int64, 64)

@@ -7,16 +7,6 @@ struct pair_int_int
     int value;
 };
 
-static size_t hash_pair_int_int(const void* item)
-{
-    return ((const struct pair_int_int*)item)->key;
-}
-
-static BOOL equals_pair_int_int(const void* item1, const void* item2)
-{
-    return ((const struct pair_int_int*)item1)->key == ((const struct pair_int_int*)item2)->key;
-}
-
 struct pair_str_int
 {
     char key[20];
@@ -28,15 +18,6 @@ static size_t hash_pair_str_int(const void* item)
     return hl_hash_cstr(((const struct pair_str_int*)item)->key);
 }
 
-static BOOL equals_pair_str_int(const void* item1, const void* item2)
-{
-    if(item1 == NULL || item2 == NULL)
-    {
-        return item1 == item2;
-    }
-    return strcmp(((const struct pair_str_int*)item1)->key, ((const struct pair_str_int*)item2)->key) == 0;
-}
-
 CASE(test_hashmap_insert_and_find)
 {
     hl_hashmap hashmap;
@@ -46,7 +27,7 @@ CASE(test_hashmap_insert_and_find)
     struct pair_str_int str_int;
     int values[100];
 
-    hl_hashmap_new(&hashmap, hash_pair_int_int, equals_pair_int_int);
+    hl_hashmap_new(&hashmap, hl_hash_int, hl_equals_int);
     EXPECT_EQ_INT(0, hl_hashmap_len(&hashmap));
 
     for(i = 0; i < 100; ++i)
@@ -78,7 +59,7 @@ CASE(test_hashmap_insert_and_find)
 
     hl_hashmap_free(&hashmap);
 
-    hl_hashmap_new(&hashmap, hash_pair_str_int, equals_pair_str_int);
+    hl_hashmap_new(&hashmap, hl_hash_cstr, hl_equals_cstr);
     EXPECT_EQ_INT(0, hl_hashmap_len(&hashmap));
 
     for(i = 0; i < 100; ++i)
@@ -111,20 +92,22 @@ CASE(test_hashmap_insert_and_find)
     hl_hashmap_free(&hashmap);
 }
 
-#if 0
 CASE(test_hashmap_swap)
 {
     hl_hashmap hashmap1;
     hl_hashmap hashmap2;
     hl_hashmap_node* iter;
+    struct pair_int_int int_int;
     int i;
 
-    hl_hashmap_new(&hashmap1);
-    hl_hashmap_new(&hashmap2);
+    hl_hashmap_new(&hashmap1, hl_hash_int, hl_equals_int);
+    hl_hashmap_new(&hashmap2, hl_hash_int, hl_equals_int);
 
     for(i = 0; i < 10; ++i)
     {
-        hl_hashmap_append(&hashmap1, &i, sizeof(int));
+        int_int.key = i;
+        int_int.value = i+1;
+        hl_hashmap_insert(&hashmap1, &int_int, sizeof(struct pair_int_int));
     }
     EXPECT_EQ_INT(10, hl_hashmap_len(&hashmap1));
     EXPECT_EQ_INT(0, hl_hashmap_len(&hashmap2));
@@ -133,13 +116,12 @@ CASE(test_hashmap_swap)
     EXPECT_EQ_INT(0, hl_hashmap_len(&hashmap1));
     EXPECT_EQ_INT(10, hl_hashmap_len(&hashmap2));
 
-    iter = hl_hashmap_begin(&hashmap2);
-    i = 0;
-    while(iter != hl_hashmap_end(&hashmap2))
+    for(i = 0; i < 10; ++i)
     {
-        REQUIRE_EQ_INT(i, hl_hashmap_ref(int, iter));
-        hl_hashmap_next(&iter);
-        ++i;
+        int_int.key = i;
+        iter = hl_hashmap_find(&hashmap2, &int_int);
+        EXPECT(iter != hl_hashmap_end(&hashmap2));
+        EXPECT_EQ_INT(i + 1, hl_hashmap_ref(struct pair_int_int, iter).value);
     }
 
     hl_hashmap_free(&hashmap1);
@@ -150,13 +132,17 @@ CASE(test_hashmap_clear_and_clone)
 {
     hl_hashmap hashmap;
     hl_hashmap hashmap2;
+    struct pair_int_int int_int;
+    hl_hashmap_node* iter;
     int i;
 
-    hl_hashmap_new(&hashmap);
-    hl_hashmap_new(&hashmap2);
+    hl_hashmap_new(&hashmap, hl_hash_int, hl_equals_int);
+    hl_hashmap_new(&hashmap2, hl_hash_int, hl_equals_int);
     for(i = 0; i < 10; ++i)
     {
-        hl_hashmap_append(&hashmap, &i, sizeof(int));
+        int_int.key = i;
+        int_int.value = i+1;
+        hl_hashmap_insert(&hashmap, &int_int, sizeof(struct pair_int_int));
     }
 
     EXPECT_EQ_INT(10, hl_hashmap_len(&hashmap));
@@ -165,24 +151,26 @@ CASE(test_hashmap_clear_and_clone)
     EXPECT_EQ_INT(0, hl_hashmap_len(&hashmap));
     for(i = 0; i < 10; ++i)
     {
-        hl_hashmap_append(&hashmap, &i, sizeof(int));
+        int_int.key = i;
+        int_int.value = i+1;
+        hl_hashmap_insert(&hashmap, &int_int, sizeof(struct pair_int_int));
     }
     EXPECT_EQ_INT(10, hl_hashmap_len(&hashmap));
 
-    hl_hashmap_clone(&hashmap2, &hashmap, sizeof(int));
+    hl_hashmap_clone(&hashmap2, &hashmap, sizeof(struct pair_int_int));
+    EXPECT_EQ_INT(10, hl_hashmap_len(&hashmap));
     EXPECT_EQ_INT(10, hl_hashmap_len(&hashmap2));
-    hl_hashmap_node* iter = hl_hashmap_begin(&hashmap2);
-    i = 0;
-    while(iter != hl_hashmap_end(&hashmap2))
+
+    for(i = 0; i < 10; ++i)
     {
-        EXPECT_EQ_INT(i, hl_hashmap_ref(int, iter));
-        hl_hashmap_next(&iter);
-        ++i;
+        int_int.key = i;
+        iter = hl_hashmap_find(&hashmap2, &int_int);
+        EXPECT(iter != hl_hashmap_end(&hashmap2));
+        EXPECT_EQ_INT(i + 1, hl_hashmap_ref(struct pair_int_int, iter).value);
     }
 
     hl_hashmap_free(&hashmap);
     hl_hashmap_free(&hashmap2);
 }
-#endif
 
-UNIT(test_hashmap, test_hashmap_insert_and_find)//, test_hashmap_swap, test_hashmap_clear_and_clone)
+UNIT(test_hashmap, test_hashmap_insert_and_find, test_hashmap_swap, test_hashmap_clear_and_clone)
