@@ -9,6 +9,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: install
+      run: |
+        sudo apt install valgrind
     - name: configure
       run: mkdir build && cd build && cmake -DCMAKE_C_FLAGS="-Werror" ..
     - name: build
