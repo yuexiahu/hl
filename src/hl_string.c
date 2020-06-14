@@ -1,4 +1,5 @@
 #include "hl_string.h"
+#include <stdarg.h>
 
 HL_INLINE size_t hl_better_size(size_t size)
 {
@@ -121,15 +122,37 @@ void hl_string_prepend_cstr(hl_string* string, const char* data)
     }
 }
 
-void hl_string_reserve(hl_string* string, size_t len)
+int hl_string_sprintf(hl_string* string, const char* format, ...)
 {
     hl_assert(string != NULL);
-    if(len <= hl_string_cap(string))
+    va_list ap;
+    int ret;
+
+    va_start(ap, format);
+    ret = vsprintf(hl_string_cstr(string), format, ap);
+    va_end(ap);
+
+    if(ret < 0)
+    {
+        hl_string_clear(string);
+    }
+    else
+    {
+        string->len = ret;
+    }
+
+    return ret;
+}
+
+void hl_string_reserve(hl_string* string, size_t len_hint)
+{
+    hl_assert(string != NULL);
+    if(len_hint <= hl_string_cap(string))
     {
         return;
     }
 
-    size_t cap = hl_better_size(len + 1);
+    size_t cap = hl_better_size(len_hint + 1);
     if(!string->start)
     {
         string->start = hl_malloc(cap);

@@ -187,5 +187,32 @@ CASE(test_string_reserve_and_fit)
     hl_string_free(&str);
 }
 
+CASE(test_string_sprintf)
+{
+    hl_string string;
+    char buffer[256];
+    int i;
+    hl_string_new(&string);
+
+    for(i = 0; i < 10; ++i)
+    {
+        int len = hl_string_sprintf(&string, "%d %d", i, i+1);
+        int len2 = sprintf(buffer, "%d %d", i, i+1);
+        EXPECT_EQ_INT(len, len2);
+        EXPECT_EQ_STR(buffer, hl_string_cstr(&string));
+    }
+
+    hl_string_reserve(&string, 256);
+    for(i = 0; i < 10; ++i)
+    {
+        int len = hl_string_sprintf(&string, "%100d %100d", i, i+1);
+        int len2 = sprintf(buffer, "%100d %100d", i, i+1);
+        EXPECT_EQ_INT(len, len2);
+        EXPECT_EQ_STR(buffer, hl_string_cstr(&string));
+    }
+
+    hl_string_free(&string);
+}
+
 UNIT(test_string, test_string_clone, test_string_append, test_string_prepend, test_string_swap,
-     test_string_reserve_and_fit)
+     test_string_reserve_and_fit, test_string_sprintf)
