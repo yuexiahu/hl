@@ -8,5 +8,5 @@
 - [x] hl_vector
 - [x] hl_list
 - [x] hl_slist
-- [ ] hl_hashmap
+- [x] hl_hashmap
 - [ ] hl_map
