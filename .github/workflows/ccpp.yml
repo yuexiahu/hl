@@ -17,3 +17,5 @@ jobs:
       run: cd build && ctest
       env:
         CTEST_OUTPUT_ON_FAILURE: 1
+    - name: memcheck
+      run: cd build && ctest -T memcheck
