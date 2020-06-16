@@ -16,6 +16,9 @@ CASE(test_vector_get_and_append)
     {
         EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, i));
     }
+    EXPECT_EQ_INT(10, hl_vector_len(&vector));
+    EXPECT_EQ_INT(0, *(int *)hl_vector_first(&vector));
+    EXPECT_EQ_INT(9, *(int *)hl_vector_last(&vector));
 
     hl_vector_free(&vector);
 
@@ -34,6 +37,10 @@ CASE(test_vector_get_and_append)
         EXPECT_EQ_INT(i, hl_vector_ref(char, &vector, i));
     }
 
+    EXPECT_EQ_INT(10, hl_vector_len(&vector));
+    EXPECT_EQ_INT(0, *(char *)hl_vector_first(&vector));
+    EXPECT_EQ_INT(9, *(char *)hl_vector_last(&vector));
+
     hl_vector_free(&vector);
 
     double double_num = 0;
@@ -50,6 +57,10 @@ CASE(test_vector_get_and_append)
     {
         EXPECT_EQ_DOUBLE(i, hl_vector_ref(double, &vector, i));
     }
+
+    EXPECT_EQ_INT(10, hl_vector_len(&vector));
+    EXPECT_EQ_DOUBLE(0, *(double *)hl_vector_first(&vector));
+    EXPECT_EQ_DOUBLE(9, *(double *)hl_vector_last(&vector));
 
     hl_vector_free(&vector);
 }

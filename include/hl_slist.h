@@ -64,4 +64,9 @@ HL_INLINE void hl_slist_next(hl_slist_node** iter)
     *iter = (*iter)->next;
 }
 
+HL_INLINE void* hl_slist_first(const hl_slist* slist)
+{
+    return hl_slist_at(hl_slist_begin(slist));
+}
+
 #endif // HL_LIST_H_

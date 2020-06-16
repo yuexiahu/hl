@@ -23,6 +23,7 @@ CASE(test_slist_get_and_append)
         ++i;
     }
     EXPECT_EQ_INT(10, i);
+    EXPECT_EQ_INT(0, *(int *)hl_slist_first(&slist));
 
     hl_slist_free(&slist);
 
@@ -45,6 +46,7 @@ CASE(test_slist_get_and_append)
         ++i;
     }
     EXPECT_EQ_INT(10, i);
+    EXPECT_EQ_INT(0, *(char *)hl_slist_first(&slist));
 
     hl_slist_free(&slist);
 
@@ -67,6 +69,7 @@ CASE(test_slist_get_and_append)
         ++i;
     }
     EXPECT_EQ_INT(10, i);
+    EXPECT_EQ_DOUBLE(0, *(double *)hl_slist_first(&slist));
 
     hl_slist_free(&slist);
 }

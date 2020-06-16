@@ -23,6 +23,8 @@ CASE(test_list_get_and_append)
         ++i;
     }
     EXPECT_EQ_INT(10, i);
+    EXPECT_EQ_INT(0, *(int *)hl_list_first(&list));
+    EXPECT_EQ_INT(9, *(int *)hl_list_last(&list));
 
     hl_list_free(&list);
 
@@ -45,6 +47,8 @@ CASE(test_list_get_and_append)
         ++i;
     }
     EXPECT_EQ_INT(10, i);
+    EXPECT_EQ_INT(0, *(char *)hl_list_first(&list));
+    EXPECT_EQ_INT(9, *(char *)hl_list_last(&list));
 
     hl_list_free(&list);
 
@@ -67,6 +71,8 @@ CASE(test_list_get_and_append)
         ++i;
     }
     EXPECT_EQ_INT(10, i);
+    EXPECT_EQ_DOUBLE(0, *(double *)hl_list_first(&list));
+    EXPECT_EQ_DOUBLE(9, *(double *)hl_list_last(&list));
 
     hl_list_free(&list);
 }

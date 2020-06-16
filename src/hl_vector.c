@@ -72,58 +72,45 @@ void hl_vector_clone_array(hl_vector* vector, const void* from, size_t len)
     vector->len = len;
 }
 
-int hl_vector_index_of(const hl_vector* vector, const void* item)
+int hl_vector_find(const hl_vector* vector, const void* item, size_t start, BOOL(*equals)(const void* item1, const void* item2))
 {
     hl_assert(vector != NULL);
-    char* p = vector->items;
-    for(size_t i = 0; i < hl_vector_len(vector); ++i)
+    char* p = vector->items + start*hl_vector_item_size(vector);
+    for(size_t i = start; i < hl_vector_len(vector); ++i)
     {
-        if(0 == memcmp(p, item, hl_vector_item_size(vector)))
+        if(equals == NULL)
         {
-            return i;
+            if(0 == memcmp(p, item, hl_vector_item_size(vector)))
+            {
+                return i;
+            }
+        }
+        else
+        {
+            if(equals(p, item))
+            {
+                return i;
+            }
         }
         p += hl_vector_item_size(vector);
     }
     return -1;
 }
 
-void hl_vector_remove_at(hl_vector* vector, size_t index)
+int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL(*find_if)(const void* item))
 {
-    hl_assert(vector != NULL);
-    hl_return_check(index < hl_vector_len(vector));
-    void* pos = hl_vector_at(vector, index);
-    size_t move_cnt = hl_vector_len(vector) - index - 1;
+    hl_assert(vector != NULL && find_if != NULL);
 
-    if(move_cnt > 0)
+    char* p = vector->items + start*hl_vector_item_size(vector);
+    for(size_t i = start; i < hl_vector_len(vector); ++i)
     {
-        memmove(pos, pos + hl_vector_item_size(vector), move_cnt * hl_vector_item_size(vector));
-    }
-    vector->len -= 1;
-}
-
-void hl_vector_remove(hl_vector* vector, const void* item)
-{
-    hl_assert(vector != NULL);
-    int index = hl_vector_index_of(vector, item);
-    if(index != -1)
-    {
-        hl_vector_remove_at(vector, index);
-    }
-}
-
-void hl_vector_remove_all(hl_vector* vector, const void* item)
-{
-    hl_assert(vector != NULL);
-    char* p = vector->items;
-    for(size_t i = 0; i < hl_vector_len(vector); ++i)
-    {
-        if(0 == memcmp(p, item, hl_vector_item_size(vector)))
+        if(find_if(p))
         {
-            hl_vector_remove_at(vector, i);
-            continue;
+            return i;
         }
         p += hl_vector_item_size(vector);
     }
+    return -1;
 }
 
 void hl_vector_append(hl_vector* vector, const void* item)
@@ -191,5 +178,19 @@ void hl_vector_swap(hl_vector* vector1, hl_vector* vector2)
     memcpy(&tmp, vector1, sizeof(hl_vector));
     memcpy(vector1, vector2, sizeof(hl_vector));
     memcpy(vector2, &tmp, sizeof(hl_vector));
+}
+
+void hl_vector_erase(hl_vector* vector, size_t index)
+{
+    hl_assert(vector != NULL);
+    hl_return_check(index < hl_vector_len(vector));
+    void* pos = hl_vector_at(vector, index);
+    size_t move_cnt = hl_vector_len(vector) - index - 1;
+
+    if(move_cnt > 0)
+    {
+        memmove(pos, pos + hl_vector_item_size(vector), move_cnt * hl_vector_item_size(vector));
+    }
+    vector->len -= 1;
 }
 

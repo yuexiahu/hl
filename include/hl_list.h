@@ -77,4 +77,15 @@ HL_INLINE void hl_list_prev(hl_list_node** iter)
     *iter = (*iter)->prev;
 }
 
+HL_INLINE void* hl_list_first(const hl_list* list)
+{
+    return hl_list_at(hl_list_begin(list));
+}
+HL_INLINE void* hl_list_last(const hl_list* list)
+{
+    hl_list_node* iter = hl_list_end(list);
+    hl_list_prev(&iter);
+    return hl_list_at(iter);
+}
+
 #endif // HL_LIST_H_
