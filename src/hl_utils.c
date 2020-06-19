@@ -16,29 +16,23 @@ size_t hl_hash_cstr(const void* cstr_key)
     }
     return hash;
 }
-size_t hl_hash_int(const void* int_key)
-{
-    const int* pint = int_key;
-    if(pint == NULL)
-    {
-        return 0;
-    }
-    return *pint;
-}
-#define HL_HASH_INT(func, bit)                                                                                         \
+
+#define HL_HASH_INT(func, type)                                                                                        \
     size_t func(const void* key)                                                                                       \
     {                                                                                                                  \
-        const int##bit##_t* pint = key;                                                                                \
+        const type* pint = key;                                                                                        \
         if(pint == NULL)                                                                                               \
         {                                                                                                              \
             return 0;                                                                                                  \
         }                                                                                                              \
         return *pint;                                                                                                  \
     }
-HL_HASH_INT(hl_hash_int8, 8)
-HL_HASH_INT(hl_hash_int16, 16)
-HL_HASH_INT(hl_hash_int32, 32)
-HL_HASH_INT(hl_hash_int64, 64)
+
+HL_HASH_INT(hl_hash_int, int)
+HL_HASH_INT(hl_hash_int8, int8_t)
+HL_HASH_INT(hl_hash_int16, int16_t)
+HL_HASH_INT(hl_hash_int32, int32_t)
+HL_HASH_INT(hl_hash_int64, int64_t)
 
 /// equals functions
 BOOL hl_equals_cstr(const void* cstr_key1, const void* cstr_key2)
@@ -49,24 +43,45 @@ BOOL hl_equals_cstr(const void* cstr_key1, const void* cstr_key2)
     }
     return strcmp(cstr_key1, cstr_key2) == 0;
 }
-BOOL hl_equals_int(const void* int_key1, const void* int_key2)
-{
-    if(int_key1 == NULL || int_key2 == NULL)
-    {
-        return int_key1 == int_key2;
-    }
-    return *(int*)int_key1 == *(int*)int_key2;
-}
-#define HL_EQUALS_INT(func, bit)                                                                                       \
+
+#define HL_EQUALS_INT(func, type)                                                                                      \
     BOOL func(const void* key1, const void* key2)                                                                      \
     {                                                                                                                  \
         if(key1 == NULL || key2 == NULL)                                                                               \
         {                                                                                                              \
             return key1 == key2;                                                                                       \
         }                                                                                                              \
-        return *(int##bit##_t*)key1 == *(int##bit##_t*)key2;                                                           \
+        return *(type*)key1 == *(type*)key2;                                                                           \
     }
-HL_EQUALS_INT(hl_equals_int8, 8)
-HL_EQUALS_INT(hl_equals_int16, 16)
-HL_EQUALS_INT(hl_equals_int32, 32)
-HL_EQUALS_INT(hl_equals_int64, 64)
+
+HL_EQUALS_INT(hl_equals_int, int)
+HL_EQUALS_INT(hl_equals_int8, int8_t)
+HL_EQUALS_INT(hl_equals_int16, int16_t)
+HL_EQUALS_INT(hl_equals_int32, int32_t)
+HL_EQUALS_INT(hl_equals_int64, int64_t)
+
+/// compare functions
+BOOL hl_less_cstr(const void* cstr_key1, const void* cstr_key2)
+{
+    if(cstr_key1 == NULL || cstr_key2 == NULL)
+    {
+        return cstr_key1 < cstr_key2;
+    }
+    return strcmp(cstr_key1, cstr_key2) < 0;
+}
+
+#define HL_LESS_INT(func, type)                                                                                        \
+    BOOL func(const void* key1, const void* key2)                                                                      \
+    {                                                                                                                  \
+        if(key1 == NULL || key2 == NULL)                                                                               \
+        {                                                                                                              \
+            return key1 < key2;                                                                                        \
+        }                                                                                                              \
+        return *(type*)key1 < *(type*)key2;                                                                            \
+    }
+
+HL_LESS_INT(hl_less_int, int)
+HL_LESS_INT(hl_less_int8, int8_t)
+HL_LESS_INT(hl_less_int16, int16_t)
+HL_LESS_INT(hl_less_int32, int32_t)
+HL_LESS_INT(hl_less_int64, int64_t)

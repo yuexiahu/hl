@@ -12,11 +12,23 @@ size_t hl_hash_int32(const void* int32_key);
 size_t hl_hash_int64(const void* int64_key);
 
 /// equals functions
+/// - FALSE: not equal
+/// - TRUE: equal
 BOOL hl_equals_cstr(const void* cstr_key1, const void* cstr_key2);
 BOOL hl_equals_int(const void* int_key1, const void* int_key2);
 BOOL hl_equals_int8(const void* int8_key1, const void* int8_key2);
 BOOL hl_equals_int16(const void* int16_key1, const void* int16_key2);
 BOOL hl_equals_int32(const void* int32_key1, const void* int32_key2);
 BOOL hl_equals_int64(const void* int64_key1, const void* int64_key2);
+
+/// compare functions
+/// - FALSE: key1 great or equal then key2
+/// - TRUE: key1 less then key2
+BOOL hl_less_cstr(const void* cstr_key1, const void* cstr_key2);
+BOOL hl_less_int(const void* int_key1, const void* int_key2);
+BOOL hl_less_int8(const void* int8_key1, const void* int8_key2);
+BOOL hl_less_int16(const void* int16_key1, const void* int16_key2);
+BOOL hl_less_int32(const void* int32_key1, const void* int32_key2);
+BOOL hl_less_int64(const void* int64_key1, const void* int64_key2);
 
 #endif // HL_UTILS_H
