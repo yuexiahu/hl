@@ -3,7 +3,7 @@
 
 #include "hl_defs.h"
 
-typedef  struct hl_hashmap_node
+typedef struct hl_hashmap_node
 {
     struct hl_hashmap_node* next;
     char data[0];
