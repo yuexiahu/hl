@@ -1,4 +1,5 @@
 #include "hl_hashmap.h"
+#include "hl_utils.h"
 #include "simpletest.h"
 
 struct pair_int_int

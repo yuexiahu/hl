@@ -2,6 +2,7 @@
 # build target
 #================================
 set(SOURCE_FILES
+    hl_utils.c
     hl_string.c
     hl_vector.c
     hl_list.c
@@ -11,6 +12,7 @@ set(SOURCE_FILES
 
 set(HEADER_FILES
     ${CMAKE_SOURCE_DIR}/include/hl_defs.h
+    ${CMAKE_SOURCE_DIR}/include/hl_utils.h
     ${CMAKE_SOURCE_DIR}/include/hl_string.h
     ${CMAKE_SOURCE_DIR}/include/hl_vector.h
     ${CMAKE_SOURCE_DIR}/include/hl_list.h
