@@ -10,3 +10,4 @@
 - [x] hl_slist
 - [x] hl_hashmap
 - [x] hl_map
+- [ ] hl_mempool
