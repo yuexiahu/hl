@@ -9,4 +9,4 @@
 - [x] hl_list
 - [x] hl_slist
 - [x] hl_hashmap
-- [ ] hl_map
+- [x] hl_map
