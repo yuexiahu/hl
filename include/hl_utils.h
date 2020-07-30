@@ -30,5 +30,10 @@ BOOL hl_less_int8(const void* int8_key1, const void* int8_key2);
 BOOL hl_less_int16(const void* int16_key1, const void* int16_key2);
 BOOL hl_less_int32(const void* int32_key1, const void* int32_key2);
 BOOL hl_less_int64(const void* int64_key1, const void* int64_key2);
+BOOL hl_less_unsigned(const void* unsigned_key1, const void* unsigned_key2);
+BOOL hl_less_uint8(const void* uint8_key1, const void* uint8_key2);
+BOOL hl_less_uint16(const void* uint16_key1, const void* uint16_key2);
+BOOL hl_less_uint32(const void* uint32_key1, const void* uint32_key2);
+BOOL hl_less_uint64(const void* uint64_key1, const void* uint64_key2);
 
 #endif // HL_UTILS_H

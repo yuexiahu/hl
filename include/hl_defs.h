@@ -80,7 +80,7 @@ HL_INLINE void* hl_calloc(size_t num, size_t size)
 }
 
 /// config string sso length
-#define __HL_STRING_SSO_LEN 15
+#define __HL_STRING_SSO_LEN (2*sizeof(void*)-1)
 
 /// config hashmap load factor
 #define __HL_HASHMAP_LOAD_FACTOR 0.75

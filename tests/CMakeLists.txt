@@ -16,4 +16,5 @@ test_unit(test_vector test_vector.c)
 test_unit(test_list test_list.c)
 test_unit(test_slist test_slist.c)
 test_unit(test_hashmap test_hashmap.c)
+test_unit(test_map test_map.c)
 

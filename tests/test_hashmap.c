@@ -174,4 +174,33 @@ CASE(test_hashmap_clear_and_clone)
     hl_hashmap_free(&hashmap2);
 }
 
-UNIT(test_hashmap, test_hashmap_insert_and_find, test_hashmap_swap, test_hashmap_clear_and_clone)
+CASE(test_hashmap_erase)
+{
+    hl_hashmap hashmap;
+    int i;
+    const int count = 100;
+    hl_hashmap_node* iter;
+
+    hl_hashmap_new(&hashmap, hl_hash_int, hl_equals_int);
+    for(i = 0; i < count; ++i)
+    {
+        hl_hashmap_insert(&hashmap, &i, sizeof(int));
+    }
+    EXPECT_EQ_INT(count, hl_hashmap_len(&hashmap));
+
+
+    for(i = 0; i < count; ++i)
+    {
+        iter = hl_hashmap_find(&hashmap, &i);
+        if(iter != hl_hashmap_end(&hashmap))
+        {
+            EXPECT_EQ_INT(i, hl_hashmap_ref(int, iter));
+            hl_hashmap_erase(&hashmap, iter);
+            EXPECT_EQ_INT(count-i-1, hl_hashmap_len(&hashmap));
+            EXPECT(hl_hashmap_end(&hashmap) == hl_hashmap_find(&hashmap, &i));
+        }
+    }
+    hl_hashmap_free(&hashmap);
+}
+
+UNIT(test_hashmap, test_hashmap_insert_and_find, test_hashmap_swap, test_hashmap_clear_and_clone, test_hashmap_erase)
