@@ -99,7 +99,8 @@ int hl_vector_find(const hl_vector* vector, const void* item, size_t start, BOOL
 
 int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL(*find_if)(const void* item))
 {
-    hl_assert(vector != NULL && find_if != NULL);
+    hl_assert(vector != NULL);
+    hl_assert(find_if != NULL);
 
     char* p = vector->items + start*hl_vector_item_size(vector);
     for(size_t i = start; i < hl_vector_len(vector); ++i)

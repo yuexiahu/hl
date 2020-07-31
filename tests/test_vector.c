@@ -1,5 +1,6 @@
 #include "hl_vector.h"
 #include "simpletest.h"
+#include "hl_utils.h"
 
 CASE(test_vector_get_and_append)
 {
@@ -207,5 +208,37 @@ CASE(test_vector_reserve_and_fit)
     hl_vector_free(&vector);
 }
 
+
+static int s_find_int;
+static BOOL find_if_int(const void* item)
+{
+    int i = *(const int*)item;
+    return i == s_find_int;
+}
+
+CASE(test_vector_find)
+{
+    hl_vector vector;
+    int i;
+    size_t iter;
+    hl_vector_new(&vector, 0, sizeof(int));
+
+    for(i = 0; i < 10; ++i)
+    {
+        hl_vector_append(&vector, &i);
+    }
+
+    for(i = 0; i < 10; ++i)
+    {
+        iter = hl_vector_find(&vector, &i, 0, hl_equals_int);
+        EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
+        s_find_int = i;
+        iter = hl_vector_find_if(&vector, 0, find_if_int);
+        EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
+    }
+
+    hl_vector_free(&vector);
+}
+
 UNIT(test_vector, test_vector_get_and_append, test_vector_prepend, test_vector_array, test_verctor_insert,
-     test_vector_swap, test_vector_reserve_and_fit)
+     test_vector_swap, test_vector_reserve_and_fit, test_vector_find)

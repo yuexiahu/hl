@@ -1,5 +1,6 @@
 #include "hl_list.h"
 #include "simpletest.h"
+#include "hl_utils.h"
 
 CASE(test_list_get_and_append)
 {
@@ -255,5 +256,36 @@ CASE(test_list_clear_and_clone)
     hl_list_free(&list2);
 }
 
+static int s_find_int;
+static BOOL find_if_int(const void* item)
+{
+    int i = *(const int*)item;
+    return i == s_find_int;
+}
+
+CASE(test_list_find)
+{
+    hl_list list;
+    int i;
+    hl_list_node* iter;
+    hl_list_new(&list);
+
+    for(i = 0; i < 10; ++i)
+    {
+        hl_list_append(&list, &i, sizeof(int));
+    }
+
+    for(i = 0; i < 10; ++i)
+    {
+        iter = hl_list_find(&list, &i, hl_list_begin(&list), hl_equals_int);
+        EXPECT_EQ_INT(i, hl_list_ref(int, iter));
+        s_find_int = i;
+        iter = hl_list_find_if(&list, hl_list_begin(&list), find_if_int);
+        EXPECT_EQ_INT(i, hl_list_ref(int, iter));
+    }
+
+    hl_list_free(&list);
+}
+
 UNIT(test_list, test_list_get_and_append, test_list_prepend, test_list_insert, test_list_swap,
-     test_list_clear_and_clone)
+     test_list_clear_and_clone, test_list_find)
