@@ -3,6 +3,9 @@
 
 #include "hl_defs.h"
 
+
+#define __HL_STRING_SSO_LEN (15)
+
 typedef struct hl_string
 {
     char* start;

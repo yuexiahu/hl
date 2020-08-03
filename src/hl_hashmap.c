@@ -283,6 +283,6 @@ void hl_hashmap_resize(hl_hashmap* hashmap, size_t bucket_size_hint)
 
 void hl_hashmap_reserve(hl_hashmap* hashmap, size_t len_hint)
 {
-    hl_hashmap_resize(hashmap, len_hint / __HL_HASHMAP_LOAD_FACTOR);
+    hl_hashmap_resize(hashmap, len_hint);
 }
 
