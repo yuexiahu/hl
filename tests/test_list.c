@@ -277,15 +277,44 @@ CASE(test_list_find)
 
     for(i = 0; i < 10; ++i)
     {
-        iter = hl_list_find(&list, &i, hl_list_begin(&list), hl_equals_int);
+        iter = hl_list_find(hl_list_begin(&list), hl_list_end(&list), &i, hl_equals_int);
         EXPECT_EQ_INT(i, hl_list_ref(int, iter));
         s_find_int = i;
-        iter = hl_list_find_if(&list, hl_list_begin(&list), find_if_int);
+        iter = hl_list_find_if(hl_list_begin(&list), hl_list_end(&list), find_if_int);
         EXPECT_EQ_INT(i, hl_list_ref(int, iter));
     }
 
     hl_list_free(&list);
 }
 
+CASE(test_list_erase)
+{
+    hl_list list;
+    int i;
+    const int count = 100;
+    hl_list_node* iter;
+
+    hl_list_new(&list);
+    for(i = 0; i < count; ++i)
+    {
+        hl_list_append(&list, &i, sizeof(int));
+    }
+    EXPECT_EQ_INT(count, hl_list_len(&list));
+
+
+    for(i = 0; i < count; ++i)
+    {
+        iter = hl_list_find(hl_list_begin(&list), hl_list_end(&list), &i, hl_equals_int);
+        if(iter != hl_list_end(&list))
+        {
+            EXPECT_EQ_INT(i, hl_list_ref(int, iter));
+            hl_list_erase(&list, iter);
+            EXPECT_EQ_INT(count-i-1, hl_list_len(&list));
+            EXPECT(hl_list_end(&list) == hl_list_find(hl_list_begin(&list), hl_list_end(&list), &i, hl_equals_int));
+        }
+    }
+    hl_list_free(&list);
+}
+
 UNIT(test_list, test_list_get_and_append, test_list_prepend, test_list_insert, test_list_swap,
-     test_list_clear_and_clone, test_list_find)
+     test_list_clear_and_clone, test_list_find, test_list_erase)

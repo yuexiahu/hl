@@ -50,35 +50,35 @@ void hl_list_clone(hl_list* list, const hl_list* from, size_t item_size)
     }
 }
 
-hl_list_node* hl_list_find(const hl_list* list, const void* item, hl_list_node* start,
-                           BOOL (*equals)(const void* item1, const void* item2))
+hl_list_node* hl_list_find(hl_list_node* begin, hl_list_node* end, const void* item,
+                             BOOL (*equals)(const void* item1, const void* item2))
 {
-    hl_assert(list != NULL);
     hl_assert(equals != NULL);
 
-    for(; start != hl_list_end(list); hl_list_next(&start))
+    hl_list_node* iter;
+    for(iter = begin; iter != end; hl_list_next(&iter))
     {
-        if(equals(item, hl_list_at(start)))
+        if(equals(item, hl_list_at(iter)))
         {
-            return start;
+            return iter;
         }
     }
-    return hl_list_end(list);
+    return end;
 }
 
-hl_list_node* hl_list_find_if(const hl_list* list, hl_list_node* start, BOOL (*find_if)(const void* item))
+hl_list_node* hl_list_find_if(hl_list_node* begin, hl_list_node* end, BOOL (*find_if)(const void* item))
 {
-    hl_assert(list != NULL);
     hl_assert(find_if != NULL);
 
-    for(; start != hl_list_end(list); hl_list_next(&start))
+    hl_list_node* iter;
+    for(iter = begin; iter != end; hl_list_next(&iter))
     {
-        if(find_if(hl_list_at(start)))
+        if(find_if(hl_list_at(iter)))
         {
-            return start;
+            return iter;
         }
     }
-    return hl_list_end(list);
+    return end;
 }
 
 void hl_list_append(hl_list* list, const void* item, size_t item_size)

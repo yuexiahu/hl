@@ -72,10 +72,11 @@ void hl_vector_clone_array(hl_vector* vector, const void* from, size_t len)
     vector->len = len;
 }
 
-int hl_vector_find(const hl_vector* vector, const void* item, size_t start, BOOL(*equals)(const void* item1, const void* item2))
+int hl_vector_find(const hl_vector* vector, size_t start, const void* item,
+                   BOOL (*equals)(const void* item1, const void* item2))
 {
     hl_assert(vector != NULL);
-    char* p = vector->items + start*hl_vector_item_size(vector);
+    char* p = vector->items + start * hl_vector_item_size(vector);
     for(size_t i = start; i < hl_vector_len(vector); ++i)
     {
         if(equals == NULL)
@@ -97,12 +98,12 @@ int hl_vector_find(const hl_vector* vector, const void* item, size_t start, BOOL
     return -1;
 }
 
-int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL(*find_if)(const void* item))
+int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL (*find_if)(const void* item))
 {
     hl_assert(vector != NULL);
     hl_assert(find_if != NULL);
 
-    char* p = vector->items + start*hl_vector_item_size(vector);
+    char* p = vector->items + start * hl_vector_item_size(vector);
     for(size_t i = start; i < hl_vector_len(vector); ++i)
     {
         if(find_if(p))

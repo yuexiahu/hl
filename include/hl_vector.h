@@ -67,7 +67,7 @@ HL_INLINE void hl_vector_set(const hl_vector* vector, size_t index, const void* 
     memcpy(hl_vector_at(vector, index), data, hl_vector_item_size(vector));
 }
 
-int hl_vector_find(const hl_vector* vector, const void* item, size_t start,
+int hl_vector_find(const hl_vector* vector, size_t start, const void* item,
                    BOOL (*equals)(const void* item1, const void* item2));
 int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL (*find_if)(const void* item));
 
@@ -80,14 +80,25 @@ void hl_vector_shrink_to_fit(hl_vector* vector);
 void hl_vector_swap(hl_vector* vector1, hl_vector* vector2);
 void hl_vector_erase(hl_vector* vector, size_t index);
 
+HL_INLINE size_t hl_vector_begin(const hl_vector* vector)
+{
+    hl_assert(vector != NULL);
+    return 0;
+}
+
+HL_INLINE size_t hl_vector_end(const hl_vector* vector)
+{
+    return hl_vector_len(vector);
+}
+
 HL_INLINE void* hl_vector_first(const hl_vector* vector)
 {
-    hl_assert(hl_vector_len(vector) > 0);
+    hl_assert(!hl_vector_empty(vector));
     return hl_vector_at(vector, 0);
 }
 HL_INLINE void* hl_vector_last(const hl_vector* vector)
 {
-    hl_assert(hl_vector_len(vector) > 0);
+    hl_assert(!hl_vector_empty(vector));
     return hl_vector_at(vector, hl_vector_len(vector) - 1);
 }
 

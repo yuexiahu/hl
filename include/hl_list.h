@@ -31,9 +31,9 @@ HL_INLINE BOOL hl_list_empty(const hl_list* list)
     return hl_list_len(list) == 0;
 }
 
-hl_list_node* hl_list_find(const hl_list* list, const void* item, hl_list_node* start,
-                           BOOL (*equals)(const void* item1, const void* item2));
-hl_list_node* hl_list_find_if(const hl_list* list, hl_list_node* start, BOOL (*find_if)(const void* item));
+hl_list_node* hl_list_find(hl_list_node* begin, hl_list_node* end, const void* item,
+                             BOOL (*equals)(const void* item1, const void* item2));
+hl_list_node* hl_list_find_if(hl_list_node* begin, hl_list_node* end, BOOL (*find_if)(const void* item));
 
 void hl_list_append(hl_list* list, const void* item, size_t item_size);
 void hl_list_prepend(hl_list* list, const void* item, size_t item_size);

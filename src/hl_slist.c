@@ -59,35 +59,35 @@ size_t hl_slist_len(const hl_slist* slist)
     return len;
 }
 
-hl_slist_node* hl_slist_find(const hl_slist* slist, const void* item, hl_slist_node* start,
-                           BOOL (*equals)(const void* item1, const void* item2))
+hl_slist_node* hl_slist_find(hl_slist_node* begin, hl_slist_node* end, const void* item,
+                             BOOL (*equals)(const void* item1, const void* item2))
 {
-    hl_assert(slist != NULL);
     hl_assert(equals != NULL);
 
-    for(; start != hl_slist_end(slist); hl_slist_next(&start))
+    hl_slist_node* iter;
+    for(iter = begin; iter != end; hl_slist_next(&iter))
     {
-        if(equals(item, hl_slist_at(start)))
+        if(equals(item, hl_slist_at(iter)))
         {
-            return start;
+            return iter;
         }
     }
-    return hl_slist_end(slist);
+    return end;
 }
 
-hl_slist_node* hl_slist_find_if(const hl_slist* slist, hl_slist_node* start, BOOL (*find_if)(const void* item))
+hl_slist_node* hl_slist_find_if(hl_slist_node* begin, hl_slist_node* end, BOOL (*find_if)(const void* item))
 {
-    hl_assert(slist != NULL);
     hl_assert(find_if != NULL);
 
-    for(; start != hl_slist_end(slist); hl_slist_next(&start))
+    hl_slist_node* iter;
+    for(iter = begin; iter != end; hl_slist_next(&iter))
     {
-        if(find_if(hl_slist_at(start)))
+        if(find_if(hl_slist_at(iter)))
         {
-            return start;
+            return iter;
         }
     }
-    return hl_slist_end(slist);
+    return end;
 }
 
 void hl_slist_append(hl_slist* slist, const void* item, size_t item_size)

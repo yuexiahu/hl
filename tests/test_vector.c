@@ -230,7 +230,7 @@ CASE(test_vector_find)
 
     for(i = 0; i < 10; ++i)
     {
-        iter = hl_vector_find(&vector, &i, 0, hl_equals_int);
+        iter = hl_vector_find(&vector, 0, &i, hl_equals_int);
         EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
         s_find_int = i;
         iter = hl_vector_find_if(&vector, 0, find_if_int);
