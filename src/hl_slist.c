@@ -146,6 +146,22 @@ hl_slist_node* hl_slist_erase(hl_slist* slist, hl_slist_node* iter)
 {
     hl_assert(slist != NULL);
 
+    hl_slist_node* prev_iter = slist;
+    while(prev_iter != hl_slist_end(slist))
+    {
+        if(prev_iter->next == iter)
+        {
+            break;
+        }
+        hl_slist_next(&prev_iter);
+    }
+    return hl_slist_erase_after(slist, prev_iter);
+}
+
+hl_slist_node* hl_slist_erase_after(hl_slist* slist, hl_slist_node* iter)
+{
+    hl_assert(slist != NULL);
+
     if(iter == hl_slist_end(slist))
     {
         return iter;

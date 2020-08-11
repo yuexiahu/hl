@@ -28,6 +28,10 @@ HL_INLINE size_t hl_string_len(const hl_string* string)
     hl_assert(string != NULL);
     return string->len;
 }
+HL_INLINE BOOL hl_string_empty(const hl_string* string)
+{
+    return hl_string_len(string) == 0;
+}
 
 HL_INLINE char* hl_string_cstr(hl_string* string)
 {

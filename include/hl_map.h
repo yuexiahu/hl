@@ -33,6 +33,10 @@ HL_INLINE size_t hl_map_len(const hl_map* map)
     hl_assert(map != NULL);
     return map->len;
 }
+HL_INLINE BOOL hl_map_empty(const hl_map* map)
+{
+    return hl_map_len(map) == 0;
+}
 
 hl_map_node* hl_map_insert(hl_map* map, const void* item, size_t item_size);
 void hl_map_swap(hl_map* map1, hl_map* map2);

@@ -127,9 +127,11 @@ int hl_string_sprintf(hl_string* string, const char* format, ...)
     hl_assert(string != NULL);
     va_list ap;
     int ret;
+    char* start = hl_string_cstr(string);
+    size_t max_size = hl_string_cap(string)+1;
 
     va_start(ap, format);
-    ret = vsprintf(hl_string_cstr(string), format, ap);
+    ret = vsnprintf(start, max_size, format, ap);
     va_end(ap);
 
     if(ret < 0)

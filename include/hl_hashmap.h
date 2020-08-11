@@ -31,6 +31,10 @@ HL_INLINE size_t hl_hashmap_len(const hl_hashmap* hashmap)
     hl_assert(hashmap != NULL);
     return hashmap->len;
 }
+HL_INLINE BOOL hl_hashmap_empty(const hl_hashmap* hashmap)
+{
+    return hl_hashmap_len(hashmap) == 0;
+}
 
 hl_hashmap_node* hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t item_size);
 hl_hashmap_node* hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t item_size);

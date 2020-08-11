@@ -18,6 +18,11 @@ void hl_slist_clear(hl_slist* slist);
 void hl_slist_clone(hl_slist* slist, const hl_slist* from, size_t item_size);
 
 size_t hl_slist_len(const hl_slist* slist);
+HL_INLINE BOOL hl_slist_empty(const hl_slist* slist)
+{
+    hl_assert(slist != NULL);
+    return slist->next == NULL;
+}
 
 hl_slist_node* hl_slist_find(const hl_slist* slist, const void* item, hl_slist_node* start,
                            BOOL (*equals)(const void* item1, const void* item2));
@@ -29,6 +34,7 @@ void hl_slist_insert(hl_slist* slist, hl_slist_node* iter, const void* item, siz
 void hl_slist_insert_after(hl_slist* slist, hl_slist_node* iter, const void* item, size_t item_size);
 void hl_slist_swap(hl_slist* slist1, hl_slist* slist2);
 hl_slist_node* hl_slist_erase(hl_slist* slist, hl_slist_node* iter);
+hl_slist_node* hl_slist_erase_after(hl_slist* slist, hl_slist_node* iter);
 
 #define hl_slist_ref(type, iter) (*(type*)hl_slist_at(iter))
 

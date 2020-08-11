@@ -18,22 +18,30 @@ void hl_vector_clear(hl_vector* vector);
 void hl_vector_clone(hl_vector* vector, const hl_vector* from);
 void hl_vector_clone_array(hl_vector* vector, const void* from, size_t len);
 
-HL_INLINE size_t hl_vector_len(const hl_vector* vector) {
+HL_INLINE size_t hl_vector_len(const hl_vector* vector)
+{
     hl_assert(vector != NULL);
     return vector->len;
 }
+HL_INLINE BOOL hl_vector_empty(const hl_vector* vector)
+{
+    return hl_vector_len(vector) == 0;
+}
 
-HL_INLINE size_t hl_vector_cap(const hl_vector* vector) {
+HL_INLINE size_t hl_vector_cap(const hl_vector* vector)
+{
     hl_assert(vector != NULL);
     return vector->cap;
 }
 
-HL_INLINE void* hl_vector_array(const hl_vector* vector) {
+HL_INLINE void* hl_vector_array(const hl_vector* vector)
+{
     hl_assert(vector != NULL);
     return vector->items;
 }
 
-HL_INLINE size_t hl_vector_item_size(const hl_vector* vector) {
+HL_INLINE size_t hl_vector_item_size(const hl_vector* vector)
+{
     hl_assert(vector != NULL);
     return vector->item_size;
 }
@@ -59,8 +67,9 @@ HL_INLINE void hl_vector_set(const hl_vector* vector, size_t index, const void* 
     memcpy(hl_vector_at(vector, index), data, hl_vector_item_size(vector));
 }
 
-int hl_vector_find(const hl_vector* vector, const void* item, size_t start, BOOL(*equals)(const void* item1, const void* item2));
-int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL(*find_if)(const void* item));
+int hl_vector_find(const hl_vector* vector, const void* item, size_t start,
+                   BOOL (*equals)(const void* item1, const void* item2));
+int hl_vector_find_if(const hl_vector* vector, size_t start, BOOL (*find_if)(const void* item));
 
 void hl_vector_append(hl_vector* vector, const void* item);
 void hl_vector_prepend(hl_vector* vector, const void* item);
@@ -79,7 +88,7 @@ HL_INLINE void* hl_vector_first(const hl_vector* vector)
 HL_INLINE void* hl_vector_last(const hl_vector* vector)
 {
     hl_assert(hl_vector_len(vector) > 0);
-    return hl_vector_at(vector, hl_vector_len(vector)-1);
+    return hl_vector_at(vector, hl_vector_len(vector) - 1);
 }
 
 #endif // HL_VECTOR_H_

@@ -26,6 +26,10 @@ HL_INLINE size_t hl_list_len(const hl_list* list)
     hl_assert(list != NULL);
     return *(size_t*)list->node->data;
 }
+HL_INLINE BOOL hl_list_empty(const hl_list* list)
+{
+    return hl_list_len(list) == 0;
+}
 
 hl_list_node* hl_list_find(const hl_list* list, const void* item, hl_list_node* start,
                            BOOL (*equals)(const void* item1, const void* item2));
