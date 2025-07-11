@@ -468,7 +468,7 @@ hl_map_node* hl_map_find(const hl_map* map, const void* item)
     hl_assert(map != NULL);
 
     hl_map_node* x = map->root;
-    hl_map_node* y = map->root;
+    hl_map_node* y = NULL;
     while(x)
     {
         if(!map->less(x->data, item))
