@@ -257,29 +257,60 @@ CASE(test_vector_find)
 CASE(test_vector_lower_bound)
 {
     hl_vector vector;
-    int i;
-    size_t iter;
     hl_vector_new(&vector, 0, sizeof(int));
 
-    for(i = 0; i < 10; ++i)
+    // 测试空vector
+    int search_val = 5;
+    size_t pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(0, pos);
+
+    // 添加一些有序数据
+    int data[] = {1, 3, 3, 7, 9, 12, 15, 18};
+    size_t data_len = sizeof(data) / sizeof(int);
+    for(size_t i = 0; i < data_len; ++i)
     {
-        hl_vector_append(&vector, &i);
+        hl_vector_append(&vector, &data[i]);
     }
 
-    for(i = 0; i < 10; ++i)
-    {
-        iter = hl_vector_lower_bound(&vector, &i, hl_less_int);
-        EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
-        s_find_int = i;
-    }
+    // 测试查找存在的值
+    search_val = 3;
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(1, pos); // 第一个3的位置
+    EXPECT_EQ_INT(3, hl_vector_ref(int, &vector, pos));
 
-    int not_found = 100;
-    iter = hl_vector_lower_bound(&vector, &not_found, hl_less_int);
-    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+    search_val = 7;
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(3, pos);
+    EXPECT_EQ_INT(7, hl_vector_ref(int, &vector, pos));
 
-    not_found = -1;
-    iter = hl_vector_lower_bound(&vector, &not_found, hl_less_int);
-    EXPECT_EQ_INT(0, iter);
+    search_val = 1;
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(0, pos);
+    EXPECT_EQ_INT(1, hl_vector_ref(int, &vector, pos));
+
+    search_val = 18;
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(7, pos);
+    EXPECT_EQ_INT(18, hl_vector_ref(int, &vector, pos));
+
+    // 测试查找不存在的值
+    search_val = 0; // 小于所有元素
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(0, pos);
+
+    search_val = 2; // 在1和3之间
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(1, pos);
+    EXPECT_EQ_INT(3, hl_vector_ref(int, &vector, pos));
+
+    search_val = 5; // 在3和7之间
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(3, pos);
+    EXPECT_EQ_INT(7, hl_vector_ref(int, &vector, pos));
+
+    search_val = 20; // 大于所有元素
+    pos = hl_vector_lower_bound(&vector, &search_val, hl_less_int);
+    EXPECT_EQ_INT(8, pos); // 等于vector长度
 
     hl_vector_free(&vector);
 }
