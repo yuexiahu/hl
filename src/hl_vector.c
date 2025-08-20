@@ -211,43 +211,28 @@ void hl_vector_sort(hl_vector* vector, BOOL (*less)(const void* item1, const voi
     qsort(start, hl_vector_len(vector), hl_vector_item_size(vector), less);
 }
 
-size_t hl_vector_bsearch(const hl_vector* vector, const void* item,
+size_t hl_vector_lower_bound(const hl_vector* vector, const void* item,
                       BOOL (*less)(const void* item1, const void* item2))
 {
     hl_assert(vector != NULL);
     hl_assert(item != NULL);
     hl_assert(less != NULL);
 
-    if(hl_vector_len(vector) == 0)
-    {
-        return -1;
-    }
-
     size_t low = 0;
     size_t high = hl_vector_len(vector);
-    if (high == 0)
-    {
-        return hl_vector_end(vector);
-    }
-    high -= 1;
 
-    while(low <= high)
+    while(low < high)
     {
-        size_t mid = (low + high) / 2;
+        size_t mid = low + (high - low) / 2;
         char* p = (char*)vector->items + mid * hl_vector_item_size(vector);
         if(less(p, item))
         {
             low = mid + 1;
         }
-        else if(less(item, p))
-        {
-            if (mid == 0) break; // prevent underflow
-            high = mid - 1;
-        }
         else
         {
-            return mid;
+            high = mid;
         }
     }
-    return hl_vector_end(vector);
+    return low;
 }

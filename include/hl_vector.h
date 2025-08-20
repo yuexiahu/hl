@@ -81,7 +81,7 @@ void hl_vector_swap(hl_vector* vector1, hl_vector* vector2);
 void hl_vector_erase(hl_vector* vector, size_t index);
 
 void hl_vector_sort(hl_vector* vector, BOOL (*less)(const void* item1, const void* item2));
-size_t hl_vector_bsearch(const hl_vector* vector, const void* item,
+size_t hl_vector_lower_bound(const hl_vector* vector, const void* item,
                    BOOL (*less)(const void* item1, const void* item2));
 
 HL_INLINE size_t hl_vector_begin(const hl_vector* vector)

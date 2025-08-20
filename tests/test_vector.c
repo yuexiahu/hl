@@ -254,7 +254,7 @@ CASE(test_vector_find)
     hl_vector_free(&vector);
 }
 
-CASE(test_vector_bsearch)
+CASE(test_vector_lower_bound)
 {
     hl_vector vector;
     int i;
@@ -268,21 +268,21 @@ CASE(test_vector_bsearch)
 
     for(i = 0; i < 10; ++i)
     {
-        iter = hl_vector_bsearch(&vector, &i, hl_less_int);
+        iter = hl_vector_lower_bound(&vector, &i, hl_less_int);
         EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
         s_find_int = i;
     }
 
     int not_found = 100;
-    iter = hl_vector_bsearch(&vector, &not_found, hl_less_int);
+    iter = hl_vector_lower_bound(&vector, &not_found, hl_less_int);
     EXPECT_EQ_INT(hl_vector_end(&vector), iter);
 
     not_found = -1;
-    iter = hl_vector_bsearch(&vector, &not_found, hl_less_int);
-    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+    iter = hl_vector_lower_bound(&vector, &not_found, hl_less_int);
+    EXPECT_EQ_INT(0, iter);
 
     hl_vector_free(&vector);
 }
 
 UNIT(test_vector, test_vector_get_and_append, test_vector_prepend, test_vector_array, test_verctor_insert,
-     test_vector_swap, test_vector_reserve_and_fit, test_vector_find, test_vector_bsearch)
+     test_vector_swap, test_vector_reserve_and_fit, test_vector_find, test_vector_lower_bound)
