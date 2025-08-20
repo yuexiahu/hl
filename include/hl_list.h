@@ -35,9 +35,10 @@ hl_list_node* hl_list_find(hl_list_node* begin, hl_list_node* end, const void* i
                              BOOL (*equals)(const void* item1, const void* item2));
 hl_list_node* hl_list_find_if(hl_list_node* begin, hl_list_node* end, BOOL (*find_if)(const void* item));
 
-void hl_list_append(hl_list* list, const void* item, size_t item_size);
-void hl_list_prepend(hl_list* list, const void* item, size_t item_size);
-void hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t item_size);
+hl_list_node* hl_list_append(hl_list* list, const void* item, size_t item_size);
+hl_list_node* hl_list_prepend(hl_list* list, const void* item, size_t item_size);
+hl_list_node* hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t item_size);
+hl_list_node* hl_list_insert_after(hl_list* list, hl_list_node* iter, const void* item, size_t item_size);
 void hl_list_swap(hl_list* list1, hl_list* list2);
 hl_list_node* hl_list_erase(hl_list* list, hl_list_node* iter);
 

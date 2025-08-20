@@ -36,4 +36,7 @@ BOOL hl_less_uint16(const void* uint16_key1, const void* uint16_key2);
 BOOL hl_less_uint32(const void* uint32_key1, const void* uint32_key2);
 BOOL hl_less_uint64(const void* uint64_key1, const void* uint64_key2);
 
+/// memory functions
+void* hl_cleancopy(void* dst, const void* src, size_t size);
+
 #endif // HL_UTILS_H

@@ -91,3 +91,20 @@ HL_LESS_INT(hl_less_uint8, uint8_t)
 HL_LESS_INT(hl_less_uint16, uint16_t)
 HL_LESS_INT(hl_less_uint32, uint32_t)
 HL_LESS_INT(hl_less_uint64, uint64_t)
+
+// memory functions
+void* hl_cleancopy(void* dst, const void* src, size_t size)
+{
+    if(dst == NULL)
+    {
+        return NULL;
+    }
+
+    if (src == NULL)
+    {
+        memset(dst, 0, size);
+        return dst;
+    }
+    memcpy(dst, src, size);
+    return dst;
+}

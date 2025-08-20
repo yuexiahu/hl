@@ -237,8 +237,52 @@ CASE(test_vector_find)
         EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
     }
 
+    int not_found = 100;
+    iter = hl_vector_find(&vector, 0, &not_found, hl_equals_int);
+    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+    s_find_int = not_found;
+    iter = hl_vector_find_if(&vector, 0, find_if_int);
+    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+
+    not_found = -1;
+    iter = hl_vector_find(&vector, 0, &not_found, hl_equals_int);
+    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+    s_find_int = not_found;
+    iter = hl_vector_find_if(&vector, 0, find_if_int);
+    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+
+    hl_vector_free(&vector);
+}
+
+CASE(test_vector_bsearch)
+{
+    hl_vector vector;
+    int i;
+    size_t iter;
+    hl_vector_new(&vector, 0, sizeof(int));
+
+    for(i = 0; i < 10; ++i)
+    {
+        hl_vector_append(&vector, &i);
+    }
+
+    for(i = 0; i < 10; ++i)
+    {
+        iter = hl_vector_bsearch(&vector, &i, hl_less_int);
+        EXPECT_EQ_INT(i, hl_vector_ref(int, &vector, iter));
+        s_find_int = i;
+    }
+
+    int not_found = 100;
+    iter = hl_vector_bsearch(&vector, &not_found, hl_less_int);
+    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+
+    not_found = -1;
+    iter = hl_vector_bsearch(&vector, &not_found, hl_less_int);
+    EXPECT_EQ_INT(hl_vector_end(&vector), iter);
+
     hl_vector_free(&vector);
 }
 
 UNIT(test_vector, test_vector_get_and_append, test_vector_prepend, test_vector_array, test_verctor_insert,
-     test_vector_swap, test_vector_reserve_and_fit, test_vector_find)
+     test_vector_swap, test_vector_reserve_and_fit, test_vector_find, test_vector_bsearch)

@@ -136,7 +136,7 @@ hl_hashmap_node* hl_hashmap_insert(hl_hashmap* hashmap, const void* item, size_t
 
 hl_hashmap_node* hl_hashmap_insert_noresize(hl_hashmap* hashmap, const void* item, size_t item_size)
 {
-    hl_assert(hashmap != NULL);
+    hl_assert(hashmap != NULL && item != NULL);
 
     size_t bucket = _hl_hashmap_bucket_num(hashmap, item, hashmap->bucket_size);
     hl_hashmap_node* first = hashmap->buckets[bucket];

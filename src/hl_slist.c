@@ -1,5 +1,6 @@
 #include "hl_slist.h"
 #include "hl_defs.h"
+#include "hl_utils.h"
 #include <sys/cdefs.h>
 
 void hl_slist_new(hl_slist* slist)
@@ -90,22 +91,22 @@ hl_slist_node* hl_slist_find_if(hl_slist_node* begin, hl_slist_node* end, BOOL (
     return end;
 }
 
-void hl_slist_append(hl_slist* slist, const void* item, size_t item_size)
+hl_slist_node* hl_slist_append(hl_slist* slist, const void* item, size_t item_size)
 {
     hl_assert(slist != NULL);
 
     hl_slist_node* iter = hl_slist_end(slist);
-    hl_slist_insert(slist, iter, item, item_size);
+    return hl_slist_insert(slist, iter, item, item_size);
 }
 
-void hl_slist_prepend(hl_slist* slist, const void* item, size_t item_size)
+hl_slist_node* hl_slist_prepend(hl_slist* slist, const void* item, size_t item_size)
 {
     hl_assert(slist != NULL);
 
-    hl_slist_insert_after(slist, slist, item, item_size);
+    return hl_slist_insert_after(slist, slist, item, item_size);
 }
 
-void hl_slist_insert(hl_slist* slist, hl_slist_node* iter, const void* item, size_t item_size)
+hl_slist_node* hl_slist_insert(hl_slist* slist, hl_slist_node* iter, const void* item, size_t item_size)
 {
     hl_assert(slist != NULL);
 
@@ -118,20 +119,20 @@ void hl_slist_insert(hl_slist* slist, hl_slist_node* iter, const void* item, siz
         }
         hl_slist_next(&prev_iter);
     }
-    hl_slist_insert_after(slist, prev_iter, item, item_size);
+    return hl_slist_insert_after(slist, prev_iter, item, item_size);
 }
 
-void hl_slist_insert_after(hl_slist* slist, hl_slist_node* iter, const void* item, size_t item_size)
+hl_slist_node* hl_slist_insert_after(hl_slist* slist, hl_slist_node* iter, const void* item, size_t item_size)
 {
-    hl_assert(slist != NULL);
-    hl_return_check(iter != NULL);
+    hl_assert(slist != NULL && iter != NULL);
 
     hl_slist_node* node = hl_malloc(sizeof(hl_slist_node) + item_size);
-    memcpy(node->data, item, item_size);
+    hl_cleancopy(node->data, item, item_size);
 
     hl_slist_node* next = iter->next;
     iter->next = node;
     node->next = next;
+    return node;
 }
 
 void hl_slist_swap(hl_slist* slist1, hl_slist* slist2)

@@ -1,5 +1,6 @@
 #include "hl_list.h"
 #include "hl_defs.h"
+#include "hl_utils.h"
 
 void hl_list_new(hl_list* list)
 {
@@ -81,28 +82,28 @@ hl_list_node* hl_list_find_if(hl_list_node* begin, hl_list_node* end, BOOL (*fin
     return end;
 }
 
-void hl_list_append(hl_list* list, const void* item, size_t item_size)
+hl_list_node* hl_list_append(hl_list* list, const void* item, size_t item_size)
 {
     hl_assert(list != NULL);
 
     hl_list_node* iter = hl_list_end(list);
-    hl_list_insert(list, iter, item, item_size);
+    return hl_list_insert(list, iter, item, item_size);
 }
 
-void hl_list_prepend(hl_list* list, const void* item, size_t item_size)
+hl_list_node* hl_list_prepend(hl_list* list, const void* item, size_t item_size)
 {
     hl_assert(list != NULL);
 
     hl_list_node* iter = hl_list_begin(list);
-    hl_list_insert(list, iter, item, item_size);
+    return hl_list_insert(list, iter, item, item_size);
 }
 
-void hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t item_size)
+hl_list_node* hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t item_size)
 {
     hl_assert(list != NULL && iter != NULL);
 
     hl_list_node* node = hl_malloc(sizeof(hl_list_node) + item_size);
-    memcpy(node->data, item, item_size);
+    hl_cleancopy(node->data, item, item_size);
 
     hl_list_node* prev = iter->prev;
     prev->next = node;
@@ -111,6 +112,18 @@ void hl_list_insert(hl_list* list, hl_list_node* iter, const void* item, size_t 
     iter->prev = node;
 
     *(size_t*)list->node->data += 1;
+    return node;
+}
+
+hl_list_node* hl_list_insert_after(hl_list* list, hl_list_node* iter, const void* item, size_t item_size)
+{
+    hl_assert(list != NULL);
+
+    if (iter == hl_list_end(list))
+    {
+        return hl_list_append(list, item, item_size);
+    }
+    return hl_list_insert(list, iter->next, item, item_size);
 }
 
 void hl_list_swap(hl_list* list1, hl_list* list2)

@@ -303,15 +303,10 @@ void hl_map_clone(hl_map* map, const hl_map* from, size_t item_size)
 
 hl_map_node* hl_map_insert(hl_map* map, const void* item, size_t item_size)
 {
-    hl_assert(map != NULL);
+    hl_assert(map != NULL && item != NULL);
 
     hl_map_node* x = map->root;
     hl_map_node* y = NULL;
-    hl_map_node* node = hl_malloc(sizeof(hl_map_node) + item_size);
-    node->left = NULL;
-    node->right = NULL;
-    node->color = HL_MAP_RED;
-    memcpy(node->data, item, item_size);
 
     while(x != NULL)
     {
@@ -325,6 +320,61 @@ hl_map_node* hl_map_insert(hl_map* map, const void* item, size_t item_size)
             x = x->right;
         }
     }
+
+    hl_map_node* node = hl_malloc(sizeof(hl_map_node) + item_size);
+    node->left = NULL;
+    node->right = NULL;
+    node->color = HL_MAP_RED;
+    memcpy(node->data, item, item_size);
+    node->parent = y;
+
+    if(y == NULL)
+    {
+        map->root = node;
+    }
+    else if(map->less(item, y->data))
+    {
+        y->left = node;
+    }
+    else
+    {
+        y->right = node;
+    }
+    hl_map_insert_fixup(map, node);
+    ++map->len;
+    return node;
+}
+
+hl_map_node* hl_map_insert_or_replace(hl_map* map, const void* item, size_t item_size)
+{
+    hl_assert(map != NULL && item != NULL);
+
+    hl_map_node* x = map->root;
+    hl_map_node* y = NULL;
+    
+    while(x != NULL)
+    {
+        y = x;
+        if(map->less(item, x->data))
+        {
+            x = x->left;
+        }
+        else if(map->less(x->data, item))
+        {
+            x = x->right;
+        }
+        else
+        {
+            hl_map_set(x, item, item_size);
+            return x;
+        }
+    }
+
+    hl_map_node* node = hl_malloc(sizeof(hl_map_node) + item_size);
+    node->left = NULL;
+    node->right = NULL;
+    node->color = HL_MAP_RED;
+    memcpy(node->data, item, item_size);
     node->parent = y;
 
     if(y == NULL)

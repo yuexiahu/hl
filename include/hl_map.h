@@ -39,6 +39,7 @@ HL_INLINE BOOL hl_map_empty(const hl_map* map)
 }
 
 hl_map_node* hl_map_insert(hl_map* map, const void* item, size_t item_size);
+hl_map_node* hl_map_insert_or_replace(hl_map* map, const void* item, size_t item_size);
 void hl_map_swap(hl_map* map1, hl_map* map2);
 hl_map_node* hl_map_erase(hl_map* map, hl_map_node* iter);
 hl_map_node* hl_map_find(const hl_map* map, const void* item);
